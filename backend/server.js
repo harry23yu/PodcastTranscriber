@@ -135,6 +135,22 @@ app.post("/get-episode", async (req, res) => {
   }
 });
 
+// 4. Test audio extraction
+app.get("/get-audio", (req, res) => {
+  const filePath = path.join(__dirname, "test_audio", "test_audio_women_engineers.mp3");
+
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ error: "Audio file not found" });
+  }
+
+  res.set({
+    "Content-Type": "audio/mpeg",
+    "Content-Disposition": "inline; filename=test_audio_women_engineers.mp3"
+  });
+
+  fs.createReadStream(filePath).pipe(res);
+});
+
 app.get("/", (req, res) => {
   res.send("Server is running");
 });

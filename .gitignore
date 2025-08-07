@@ -13,3 +13,11 @@ node_modules/
 dist/
 build/
 .next/
+
+# Test files
+/backend/test_episodes/test_episode*.json
+/backend/test_audio/test_audio*.mp3
+
+# Keep folder for test episode files
+!/backend/test_episodes/
+!/backend/test_episodes/.gitkeep

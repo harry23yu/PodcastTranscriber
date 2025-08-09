@@ -67,37 +67,6 @@ async function uploadAndTranscribe(localPath) {
   return tr.id;
 }
 
-// in backend/src/transcribe.js
-// const fetch = require("node-fetch");
-
-// router.post("/transcribe/from-url", async (req, res) => {
-//   try {
-//     const { sourceUrl } = req.body;
-//     if (!sourceUrl) return res.status(400).json({ error: "sourceUrl required" });
-
-//     // Fetch the audio from your source (must be full MP3)
-//     const r = await fetch(sourceUrl);
-//     if (!r.ok) return res.status(400).json({ error: "cannot fetch sourceUrl" });
-
-//     // Upload to AssemblyAI
-//     const uploadUrl = await aai.files.upload(r.body);
-
-//     // Submit transcription job
-//     const job = await aai.transcripts.submit({
-//       audio_url: uploadUrl,
-//       speaker_labels: true,
-//       disfluencies: false,
-//       punctuate: true,
-//       format_text: true,
-//     });
-
-//     res.json({ id: job.id, status: job.status });
-//   } catch (e) {
-//     console.error(e);
-//     res.status(500).json({ error: "failed to start transcription" });
-//   }
-// });
-
 const fetch = require("node-fetch");
 
 router.post("/transcribe/from-url", async (req, res) => {
@@ -128,5 +97,47 @@ router.post("/transcribe/from-url", async (req, res) => {
   }
 });
 
+const { resolveEpisode } = require("./resolveEpisode.js");
+
+// POST /transcribe-from-spotify
+router.post("/transcribe-from-spotify", async (req, res) => {
+  try {
+    const { spotifyUrl } = req.body;
+    if (!spotifyUrl) {
+      return res.status(400).json({ error: "spotifyUrl required" });
+    }
+
+    // Make sure you have the Spotify user access token from authentication
+    if (!global.userAccessToken) {
+      return res.status(400).json({ error: "Please authenticate with Spotify first." });
+    }
+
+    // Step 1: Get MP3 URL
+    const { mp3Url, reason } = await resolveEpisode(spotifyUrl, global.userAccessToken);
+    if (!mp3Url) {
+      return res.status(400).json({ error: reason || "Could not get MP3 URL" });
+    }
+
+    // Step 2: Submit to AssemblyAI
+    const transcript = await aai.transcripts.submit({
+      audio_url: mp3Url,
+      speaker_labels: true,
+      disfluencies: false,
+      filter_profanity: true,
+      punctuate: true,
+      format_text: true
+    });
+
+    res.json({
+      id: transcript.id,
+      status: transcript.status,
+      source: "spotify",
+      mp3Url: mp3Url
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "failed to start transcription from Spotify" });
+  }
+});
 
 module.exports = router;

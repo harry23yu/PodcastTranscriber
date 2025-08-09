@@ -67,6 +67,7 @@ app.get("/callback", async (req, res) => {
     );
 
     userAccessToken = tokenRes.data.access_token;
+    global.userAccessToken = userAccessToken;
     console.log("Access token acquired:", userAccessToken);
 
     res.send("Spotify authentication successful! You can now close this tab and use Postman to call /get-episode.");
@@ -166,6 +167,7 @@ app.get("/get-audio", (req, res) => {
   fs.createReadStream(filePath).pipe(res);
 });
 
+// 5. Check to see if episode is Spotify-exclusive
 app.post("/resolve-episode", async (req, res) => {
   const { spotifyUrl } = req.body;
   if (!userAccessToken) {

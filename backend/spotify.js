@@ -47,13 +47,13 @@ async function fetchEpisodeMetadata(episodeId) {
 
 module.exports = { extractEpisodeId, fetchEpisodeMetadata };
 
-console.log(extractEpisodeId("https://open.spotify.com/episode/7makk4oTQel546B0PZlDM5")); // Test line)
+console.log(extractEpisodeId("https://open.spotify.com/episode/3WumrPpx9LMAZwjykGJMUL")); // Test line
 console.log("Print spotify client id: ", process.env.SPOTIFY_CLIENT_ID); // Test line
 console.log("Print spotify client secret: ", process.env.SPOTIFY_CLIENT_SECRET); // Test line
 
 // Test lines are 55-60
 async function main() {
-    const metadata = await fetchEpisodeMetadata("7makk4oTQel546B0PZlDM5");
+    const metadata = await fetchEpisodeMetadata("3WumrPpx9LMAZwjykGJMUL");
     console.log(metadata);
   }
   

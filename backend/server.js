@@ -1,4 +1,18 @@
+// import dotenv from "dotenv";
+// import transcribeRouter from "./src/transcribe.js";
+
 const express = require("express");
+const dotenv = require("dotenv");
+
+dotenv.config();
+const app = express();
+app.use(express.json());
+const transcribeRouter = require("./src/transcribe.js");
+
+app.use(transcribeRouter);
+app.use(express.urlencoded({ extended: true }));
+app.listen(3000, () => console.log("API on :3000"));
+
 const cors = require("cors");
 const axios = require("axios");
 const queryString = require("querystring");
@@ -8,8 +22,9 @@ require("dotenv").config();
 
 // const { extractEpisodeId, fetchEpisodeMetadata } = require("./spotify");
 const { extractEpisodeId } = require("./spotify");
+const { resolveEpisode } = require("./src/resolveEpisode.js");
 
-const app = express();
+// const app = express();
 app.use(cors());
 app.use(express.json());
 
@@ -149,6 +164,16 @@ app.get("/get-audio", (req, res) => {
   });
 
   fs.createReadStream(filePath).pipe(res);
+});
+
+app.post("/resolve-episode", async (req, res) => {
+  const { spotifyUrl } = req.body;
+  if (!userAccessToken) {
+      return res.status(400).json({ error: "Please authenticate with Spotify first." });
+  }
+
+  const result = await resolveEpisode(spotifyUrl, userAccessToken);
+  res.json(result);
 });
 
 app.get("/", (req, res) => {

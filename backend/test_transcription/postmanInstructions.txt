@@ -1,0 +1,20 @@
+How to use Postman to test Transcription:
+
+1. Find if the podcast is Spotify only.
+    a. Endpoint: POST https://mutual-platypus-gentle.ngrok-free.app/resolve-episode
+    b. Request body: "spotifyUrl": "https://open.spotify.com/episode/EPISODE_ID"
+
+If the podcast is NOT Spotify only, proceed to step 2.
+
+2. Get the transcription ID.
+    a. Endpoint: POST https://mutual-platypus-gentle.ngrok-free.app/transcribe
+    b. Request body: "audioUrl": "PASTE_AUDIO_URL_HERE"
+
+3. Get the transcription.
+    a. Endpoint: GET https://mutual-platypus-gentle.ngrok-free.app/transcribe/TRANSCRIPTION_ID
+    b. Request body: "audioUrl": "PASTE_AUDIO_URL_HERE"
+    c. If Postman doesn't give you the transcription right away, keep clicking "Send" once every 5-10 seconds and it will eventually give you the transcription.
+
+4. Get the transcription, except this time, the JSON is much cleaner.
+    a. Endpoint: GET https://mutual-platypus-gentle.ngrok-free.app/transcribe/summary/TRANSCRIPTION_ID
+    b. Request body: "audioUrl": "PASTE_AUDIO_URL_HERE"

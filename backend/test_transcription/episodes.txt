@@ -17,3 +17,8 @@ Test episode #4: My Path to Spotify: Women in Engineering
 Link to episode $4: https://open.spotify.com/episode/7makk4oTQel546B0PZlDM5
 Spotify-exclusive: Yes
 Link to MP3: Spotify exclusive, so no MP3
+
+Test episode #5: Johnathan Bi: René Girard & Mimetic Desire
+Link to episode #5: https://open.spotify.com/episode/6jOVlRQWcF4PdY1h6F19Mc
+Spotify-exclusive: No
+Link to MP3: https://www.buzzsprout.com/1783651/episodes/12671245-johnathan-bi-rene-girard-mimetic-desire.mp3

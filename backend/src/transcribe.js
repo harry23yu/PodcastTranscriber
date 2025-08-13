@@ -7,41 +7,117 @@ const fs = require("fs");
 const router = express.Router();
 const aai = new AssemblyAI({ apiKey: process.env.ASSEMBLYAI_API_KEY });
 
+const { resolveEpisode } = require("./resolveEpisode");
+
 /**
  * POST /transcribe
  * body: { audioUrl?: string, fileId?: string }
  *  - audioUrl: a publicly reachable mp3 url
  *  - OR stream/upload the file to AssemblyAI if not public (see below)
  */
+// router.post("/transcribe", async (req, res) => {
+//   try {
+//     const { audioUrl } = req.body;
+
+//     // If you have a public URL for the full episode, use it directly:
+//     if (!audioUrl) return res.status(400).json({ error: "audioUrl required" });
+
+//     // const { mp3Url, episodeTitle, reason } =
+//     //   await resolveEpisode(spotifyUrl, global.userAccessToken);
+//     // if (!mp3Url) {
+//     //   return res.status(400).json({ error: reason || "Could not get MP3 URL" });
+//     // }
+
+//     const transcript = await aai.transcripts.submit({
+//       audio_url: audioUrl,
+//       // quality & cleanup options:
+//       speaker_labels: true,          // diarization
+//       disfluencies: false,           // remove "um", "uh"
+//       filter_profanity: true,
+//       punctuate: true,
+//       format_text: true,             // smart casing, numbers, etc.
+//       // Optional: boost accuracy for names/terms
+//       // word_boost: ["Spotify","Adele","Sasha"]
+//     });
+
+//     res.json({ id: transcript.id, status: transcript.status });
+//     // console.log("Has AAI key?", !!process.env.ASSEMBLYAI_API_KEY); // Test line
+//   } catch (e) {
+//     console.error(e);
+//     res.status(500).json({ error: "failed to start transcription" });
+//   }
+// });
+
+// router.post("/transcribe", async (req, res) => {
+//   try {
+//     let { audioUrl, spotifyUrl } = req.body;
+
+//     // If Spotify URL, resolve to mp3
+//     if (spotifyUrl && !audioUrl) {
+//       console.log("Resolving Spotify episode:", spotifyUrl);
+//       const { mp3Url, reason } = await resolveEpisode(
+//         spotifyUrl,
+//         global.userAccessToken
+//       );
+//       if (!mp3Url) {
+//         return res.status(400).json({ error: reason || "Could not get MP3 URL" });
+//       }
+//       audioUrl = mp3Url;
+//     }
+
+//     if (!audioUrl) {
+//       return res.status(400).json({ error: "audioUrl or spotifyUrl required" });
+//     }
+
+//     console.log("Submitting to AssemblyAI:", audioUrl);
+
+//     const transcript = await aai.transcripts.submit({
+//       audio_url: audioUrl,
+//       speaker_labels: true,
+//       disfluencies: false,
+//       filter_profanity: true,
+//       punctuate: true,
+//       format_text: true,
+//     });
+
+//     // Always return the ID
+//     res.json({ id: transcript.id, status: transcript.status });
+
+//   } catch (e) {
+//     console.error(e);
+//     res.status(500).json({ error: "failed to start transcription" });
+//   }
+// });
+
 router.post("/transcribe", async (req, res) => {
   try {
-    const { audioUrl } = req.body;
+    let { audioUrl, spotifyUrl } = req.body;
 
-    // If you have a public URL for the full episode, use it directly:
-    if (!audioUrl) return res.status(400).json({ error: "audioUrl required" });
+    // If a Spotify link is given, resolve to MP3
+    if (spotifyUrl && !audioUrl) {
+      const { mp3Url, reason } = await resolveEpisode(spotifyUrl, global.userAccessToken);
+      if (!mp3Url) {
+        return res.status(400).json({ error: reason || "Could not get MP3 URL" });
+      }
+      audioUrl = mp3Url;
+    }
 
-    // const { mp3Url, episodeTitle, reason } =
-    //   await resolveEpisode(spotifyUrl, global.userAccessToken);
-    // if (!mp3Url) {
-    //   return res.status(400).json({ error: reason || "Could not get MP3 URL" });
-    // }
+    if (!audioUrl) {
+      return res.status(400).json({ error: "audioUrl or spotifyUrl required" });
+    }
 
     const transcript = await aai.transcripts.submit({
       audio_url: audioUrl,
-      // quality & cleanup options:
-      speaker_labels: true,          // diarization
-      disfluencies: false,           // remove "um", "uh"
+      speaker_labels: true,
+      disfluencies: false,
       filter_profanity: true,
       punctuate: true,
-      format_text: true,             // smart casing, numbers, etc.
-      // Optional: boost accuracy for names/terms
-      // word_boost: ["Spotify","Adele","Sasha"]
+      format_text: true,
     });
 
     res.json({ id: transcript.id, status: transcript.status });
-    console.log("Has AAI key?", !!process.env.ASSEMBLYAI_API_KEY); // Test line
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "failed to start transcription" });
   }
 });

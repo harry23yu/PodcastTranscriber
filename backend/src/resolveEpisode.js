@@ -9,6 +9,9 @@ const xml2js = require ("xml2js");
  */
 async function resolveEpisode(spotifyEpisodeUrl, spotifyToken) {
     try {
+        console.log("Resolving episode URL:", spotifyEpisodeUrl); // Test line
+        console.log("Using Spotify token:", spotifyToken ? "Yes" : "No"); // Test line
+
         // Extract episode ID from URL
         const match = spotifyEpisodeUrl.match(/episode\/([a-zA-Z0-9]+)/);
         if (!match) {
@@ -67,9 +70,9 @@ async function resolveEpisode(spotifyEpisodeUrl, spotifyToken) {
 
         const mp3Url = matchEpisode.enclosure[0].$.url;
         return { 
-            mp3Url
+            mp3Url,
             // episodeTitle: data.name, // Spotify's episode title
-            // episodeTitle,
+            episodeTitle,
             // reason: null
          };
 

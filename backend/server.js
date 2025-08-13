@@ -30,6 +30,38 @@ app.use(express.json());
 
 let userAccessToken = null;
 
+// Added code from lines 34-63 so that the website can find MP3 link from Spotify episode link, then transcribe it
+const fetch = require("node-fetch");
+
+async function refreshSpotifyToken() {
+  const res = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    headers: {
+      Authorization:
+        "Basic " +
+        Buffer.from(
+          process.env.SPOTIFY_CLIENT_ID + ":" + process.env.SPOTIFY_CLIENT_SECRET
+        ).toString("base64"),
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: "grant_type=client_credentials",
+  });
+
+  const data = await res.json();
+  if (data.access_token) {
+    global.userAccessToken = data.access_token;
+    console.log("✅ Refreshed Spotify token. Starts with:", global.userAccessToken.slice(0, 10) + "..."); // Test line
+  } else {
+    console.error("❌ Failed to refresh Spotify token:", data);
+  }
+}
+
+// Get token at startup
+refreshSpotifyToken();
+
+// Refresh every 55 minutes
+setInterval(refreshSpotifyToken, 55 * 60 * 1000);
+
 // 1. Login route - send user to Spotify login
 app.get("/login", (req, res) => {
   // const scopes = "user-read-email"; // can add podcast-specific scopes if needed

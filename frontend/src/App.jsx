@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Instructions from "./components/Instructions";
 import LinkInput from "./components/LinkInput";
 import SubmitButton from "./components/SubmitButton";
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -72,12 +73,17 @@ function App() {
   
 
   return (
-    <div>
+    <div id="root">
       <h1>Spotify Transcriber</h1>
-      <LinkInput value={link} onChange={setLink} />
-      <SubmitButton onClick={handleSubmit} />
-      {loading && <LoadingSpinner />}
-      {transcript && <TranscriptDisplay text={transcript} />}
+      <div className="main-content">
+        <Instructions />
+        <div className="transcription-stuff">
+          <LinkInput value={link} onChange={setLink} />
+          <SubmitButton onClick={handleSubmit} />
+          {loading && <LoadingSpinner />}
+          {transcript && <TranscriptDisplay text={transcript} />}
+        </div>
+      </div>
     </div>
   );
 }

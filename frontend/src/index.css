@@ -126,3 +126,33 @@ pre {
   font-size: 1rem;
   line-height: 1.5;
 }
+
+.transcript-box {
+  background-color: #1e1e1e;  /* black box */
+  color: #ffffff;             /* white text */
+  padding: 1rem;
+  border-radius: 8px;
+  max-width: 800px;
+  margin: 1.5rem auto;
+}
+
+.transcript-box p {
+  margin: 0.3rem 0;
+}
+
+.transcript-box hr {
+  border: none;
+  border-top: 1px solid #444;
+  margin: 0.8rem 0;
+}
+
+.transcript-box pre {
+  background: transparent;   /* remove double black background */
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-size: 1rem;
+  line-height: 1.5;
+}

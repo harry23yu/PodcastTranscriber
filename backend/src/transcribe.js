@@ -89,17 +89,55 @@ const { resolveEpisode } = require("./resolveEpisode");
 //   }
 // });
 
+// router.post("/transcribe", async (req, res) => {
+//   try {
+//     let { audioUrl, spotifyUrl } = req.body;
+
+//     // If a Spotify link is given, resolve to MP3
+//     if (spotifyUrl && !audioUrl) {
+//       const { mp3Url, reason } = await resolveEpisode(spotifyUrl, global.userAccessToken);
+//       if (!mp3Url) {
+//         return res.status(400).json({ error: reason || "Could not get MP3 URL" });
+//       }
+//       audioUrl = mp3Url;
+//     }
+
+//     if (!audioUrl) {
+//       return res.status(400).json({ error: "audioUrl or spotifyUrl required" });
+//     }
+
+//     const transcript = await aai.transcripts.submit({
+//       audio_url: audioUrl,
+//       speaker_labels: true,
+//       disfluencies: false,
+//       filter_profanity: true,
+//       punctuate: true,
+//       format_text: true,
+//     });
+
+//     res.json({ id: transcript.id, status: transcript.status });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "failed to start transcription" });
+//   }
+// });
+
+// Right above is the  POST /transcribe endpoint that worked very well. Right below is the modified POST /transcribe endpoint because I need to display the title and length of the episode, not just the transcript.
 router.post("/transcribe", async (req, res) => {
   try {
     let { audioUrl, spotifyUrl } = req.body;
+    let episodeTitle = null; // store title for response
 
-    // If a Spotify link is given, resolve to MP3
+    // If a Spotify link is given, resolve to MP3 + title
     if (spotifyUrl && !audioUrl) {
-      const { mp3Url, reason } = await resolveEpisode(spotifyUrl, global.userAccessToken);
+      const { mp3Url, episodeTitle: resolvedTitle, reason } =
+        await resolveEpisode(spotifyUrl, global.userAccessToken);
+
       if (!mp3Url) {
         return res.status(400).json({ error: reason || "Could not get MP3 URL" });
       }
       audioUrl = mp3Url;
+      episodeTitle = resolvedTitle; // save title
     }
 
     if (!audioUrl) {
@@ -115,7 +153,11 @@ router.post("/transcribe", async (req, res) => {
       format_text: true,
     });
 
-    res.json({ id: transcript.id, status: transcript.status });
+    res.json({
+      id: transcript.id,
+      status: transcript.status,
+      episodeTitle: episodeTitle || "Unknown Title"
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "failed to start transcription" });

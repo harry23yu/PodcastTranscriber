@@ -9,6 +9,8 @@ function App() {
   const [link, setLink] = useState("");
   const [loading, setLoading] = useState(false);
   const [transcript, setTranscript] = useState("");
+  const [filterProfanity, setFilterProfanity] = useState(false); // Added line for profanity filter toggle
+  const [showTimestamps, setShowTimestamps] = useState(false); // Added line for timestamps toggle
   
   // const handleSubmit = async () => {
   //   setLoading(true);
@@ -60,7 +62,7 @@ function App() {
       const res = await fetch("/transcribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ spotifyUrl: link }),
+        body: JSON.stringify({ spotifyUrl: link, filterProfanity }), // Added filterProfanity for profanity filter toggle
       });
       const data = await res.json();
 
@@ -92,7 +94,8 @@ function App() {
         setTranscriptData({
           title: episodeTitle,
           duration: summaryData.duration,
-          transcript: summaryData.transcript
+          transcript: summaryData.transcript,
+          utterances: summaryData.utterances // Added line for speakers to display in transcription
         });
       } else {
         alert("Transcription failed.");
@@ -113,6 +116,38 @@ function App() {
         <div className="transcription-stuff">
           <LinkInput value={link} onChange={setLink} />
           <SubmitButton onClick={handleSubmit} />
+          {/* The code within the options className is for profanity filter and timestamps toggle */}
+          <div className="options">
+            <label>
+              <input
+                type="checkbox"
+                checked={filterProfanity}
+                onChange={(e) => setFilterProfanity(e.target.checked)}
+              />
+              Disable profanity?
+            </label>
+            <span className="tooltip">
+              ⓘ
+              <span className="tooltiptext">
+                When this is turned on, bad words like the F-word will be written as F***.
+              </span>
+            </span>
+            <br></br>
+            <label>
+              <input
+                type="checkbox"
+                checked={showTimestamps}
+                onChange={(e) => setShowTimestamps(e.target.checked)}
+              />
+              Show timestamps
+            </label>
+            <span className="tooltip">
+              ⓘ
+              <span className="tooltiptext">
+                When this is turned on, timestamps will appear before each speaker's paragraph.
+              </span>
+            </span>
+          </div>
           {loading && <LoadingSpinner />}
           {/* {transcript && <TranscriptDisplay text={transcript} />} */}
           {transcriptData && (
@@ -120,6 +155,8 @@ function App() {
               title={transcriptData.title}
               duration={transcriptData.duration}
               text={transcriptData.transcript}
+              utterances={transcriptData.utterances} // Added line for speakers to display in transcription
+              showTimestamps={showTimestamps} // Added line for timestamps to display in transcription
             />
           )}
         </div>

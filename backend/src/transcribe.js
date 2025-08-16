@@ -125,7 +125,7 @@ const { resolveEpisode } = require("./resolveEpisode");
 // Right above is the  POST /transcribe endpoint that worked very well. Right below is the modified POST /transcribe endpoint because I need to display the title and length of the episode, not just the transcript.
 router.post("/transcribe", async (req, res) => {
   try {
-    let { audioUrl, spotifyUrl } = req.body;
+    let { audioUrl, spotifyUrl, filterProfanity} = req.body; // Added filterProfanity for profanity filter toggle
     let episodeTitle = null; // store title for response
 
     // If a Spotify link is given, resolve to MP3 + title
@@ -148,7 +148,8 @@ router.post("/transcribe", async (req, res) => {
       audio_url: audioUrl,
       speaker_labels: true,
       disfluencies: false,
-      filter_profanity: true,
+      // filter_profanity: false,
+      filter_profanity: !!filterProfanity, // Use frontend value (added line for profanity filter toggle)
       punctuate: true,
       format_text: true,
     });
@@ -172,6 +173,7 @@ router.get("/transcribe/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const tr = await aai.transcripts.get(id);
+    // console.log("Transcript object:", tr); // Test line (for detecting speakers)
     res.json(tr);
   } catch (e) {
     console.error(e);
@@ -219,7 +221,8 @@ router.get("/transcribe/summary/:id", async (req, res) => {
       // title: episodeTitle,
       transcript: tr.text || "",
       duration: tr.audio_duration ? formatDuration(tr.audio_duration) : "00:00:00",
-      status: tr.status
+      status: tr.status,
+      utterances: tr.utterances || [] // Added line for speakers to display in transcription 
     };
 
     res.json(cleaned);

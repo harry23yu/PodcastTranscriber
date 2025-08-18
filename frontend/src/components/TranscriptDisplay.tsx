@@ -1,4 +1,5 @@
 import React from "react";
+import jsPDF from "jspdf";
 
 function formatTime(ms: number) {
     const totalSeconds = Math.floor(ms / 1000);
@@ -9,10 +10,77 @@ function formatTime(ms: number) {
 }  
 
 export default function TranscriptDisplay({ title, duration, text, utterances, showTimestamps }) {
+
+    const handleDownloadPDF = () => {
+        const doc = new jsPDF();
+      
+        // Episode metadata
+        doc.setFontSize(16);
+        doc.text("Episode Transcript", 10, 10);
+      
+        doc.setFontSize(12);
+        doc.text(`Episode name: ${title}`, 10, 20);
+        doc.text(`Duration: ${duration}`, 10, 30);
+      
+        let y = 50;
+        const lineHeight = 7;
+        const pageHeight = doc.internal.pageSize.height;
+        const pageWidth = doc.internal.pageSize.width;
+        let pageNumber = 1;
+      
+        const addPageNumber = () => {
+          doc.setFontSize(10);
+          doc.text(
+            `Page ${pageNumber}`,
+            pageWidth / 2,
+            pageHeight - 10,
+            { align: "center" }
+          );
+        };
+      
+        const addParagraphs = (lines) => {
+          lines.forEach((line) => {
+            if (y + lineHeight > pageHeight - 20) {
+              addPageNumber();
+              doc.addPage();
+              pageNumber++;
+              y = 20;
+            }
+            doc.text(line, 10, y);
+            y += lineHeight;
+          });
+        };
+      
+        if (text && text.trim().length > 0) {
+          // ✅ Clean transcript (no ads, recommended)
+          const split = doc.splitTextToSize(text, 180);
+          addParagraphs(split);
+        } else if (utterances && utterances.length > 0) {
+          // ❌ Only fallback if no clean text is available
+          utterances.forEach((utt) => {
+            const line = showTimestamps
+              ? `[${formatTime(utt.start)}] Speaker ${utt.speaker}: ${utt.text}`
+              : `Speaker ${utt.speaker}: ${utt.text}`;
+            const split = doc.splitTextToSize(line, 180);
+            addParagraphs(split);
+          });
+        }
+      
+        // Add number to last page
+        addPageNumber();
+      
+        doc.save(`${title}.pdf`);
+      };      
+
     return (
         <div className="transcript-box">
-            <p><strong>Episode name:</strong> {title}</p>
-            <p><strong>Duration:</strong> {duration}</p>
+            <div className="episode-header">
+                <p><strong>Episode name:</strong> {title}</p>
+                <p><strong>Duration:</strong> {duration}</p>
+                <button onClick={handleDownloadPDF} className="download-btn">
+                    Download PDF
+                </button>
+            </div>
             <hr />
             {/* <pre>{text}</pre> */}
             {utterances && utterances.length > 0 ? (
@@ -25,8 +93,6 @@ export default function TranscriptDisplay({ title, duration, text, utterances, s
             ) : (
                 <pre>{text}</pre>  // fallback to raw transcript
             )}
-            {/* Line 9 is the transcription without speakers and timestamps. Lines 18-27 is the transcription with speakers and timestamps. */}
         </div>
     );
 }
-  

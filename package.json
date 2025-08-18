@@ -5,6 +5,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
+    "jspdf": "^3.0.1",
     "ngrok": "^5.0.0-beta.2",
     "node-fetch": "^2.7.0",
     "query-string": "^9.2.2",

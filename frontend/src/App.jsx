@@ -151,13 +151,13 @@ function App() {
           {loading && <LoadingSpinner />}
           {/* {transcript && <TranscriptDisplay text={transcript} />} */}
           {transcriptData && (
-            <TranscriptDisplay
-              title={transcriptData.title}
-              duration={transcriptData.duration}
-              text={transcriptData.transcript}
-              utterances={transcriptData.utterances} // Added line for speakers to display in transcription
-              showTimestamps={showTimestamps} // Added line for timestamps to display in transcription
-            />
+              <TranscriptDisplay
+                title={transcriptData.title}
+                duration={transcriptData.duration}
+                text={transcriptData.transcript}
+                utterances={transcriptData.utterances} // Added line for speakers to display in transcription
+                showTimestamps={showTimestamps} // Added line for timestamps to display in transcription
+              />
           )}
         </div>
       </div>

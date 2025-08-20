@@ -280,7 +280,9 @@ router.get("/transcribe/summary/:id", async (req, res) => {
     // 2. Send each chunk to LLM
     async function cleanChunk(chunk) {
       const textBlock = chunk
-        .map(u => `[${Math.floor(u.start/1000)}s] Speaker ${u.speaker}: ${u.text}`)
+        // .map(u => `[${Math.floor(u.start/1000)}s] Speaker ${u.speaker}: ${u.text}`)
+        // .map(u => `[${formatDuration(u.start/1000)}] Speaker ${u.speaker}: ${u.text}`)
+        .map(u => `Speaker ${u.speaker}: ${u.text}`) // No timestamp is baked into the PDF
         .join("\n");
 
       // ✅ Add raw chunk word/char count here

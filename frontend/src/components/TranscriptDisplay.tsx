@@ -51,11 +51,30 @@ export default function TranscriptDisplay({ title, duration, text, utterances, s
           });
         };
       
+        // Old if statement (timestamps always appear in transcript no matter what)
+        // if (text && text.trim().length > 0) {
+        //   // ✅ Clean transcript (no ads, recommended)
+        //   const split = doc.splitTextToSize(text, 180);
+        //   addParagraphs(split);
+        // } 
+
+        // New if statement (timestamps only appear in PDF if user checks the "Show timestamps" box)
         if (text && text.trim().length > 0) {
-          // ✅ Clean transcript (no ads, recommended)
-          const split = doc.splitTextToSize(text, 180);
-          addParagraphs(split);
-        } else if (utterances && utterances.length > 0) {
+          if (showTimestamps && utterances && utterances.length > 0) {
+            // 🔹 Rebuild with timestamps
+            utterances.forEach((utt) => {
+              const timestamp = formatTime(utt.start); // hh:mm:ss
+              const line = `[${timestamp}] ${utt.speaker ? "Speaker " + utt.speaker + ": " : ""}${utt.text}`;
+              const split = doc.splitTextToSize(line, 180);
+              addParagraphs(split);
+            });
+          } else {
+            // 🔹 No timestamps, just use cleaned transcript (still respects profanity filter)
+            const split = doc.splitTextToSize(text, 180);
+            addParagraphs(split);
+          }
+        }
+        else if (utterances && utterances.length > 0) {
           // ❌ Only fallback if no clean text is available
           utterances.forEach((utt) => {
             const line = showTimestamps

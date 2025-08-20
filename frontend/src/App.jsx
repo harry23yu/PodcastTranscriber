@@ -11,48 +11,6 @@ function App() {
   const [transcript, setTranscript] = useState("");
   const [filterProfanity, setFilterProfanity] = useState(false); // Added line for profanity filter toggle
   const [showTimestamps, setShowTimestamps] = useState(false); // Added line for timestamps toggle
-  
-  // const handleSubmit = async () => {
-  //   setLoading(true);
-  //   try {
-  //     // Step 1: Start transcription
-  //     const res = await fetch("/transcribe", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ spotifyUrl: link }),
-  //     });
-  //     const data = await res.json();
-
-  //     // Check if id exists before polling
-  //     if (!data.id) {
-  //       alert(data.error || "No transcription ID returned");
-  //       setLoading(false);
-  //       return;
-  //     }      
-  
-  //     // Step 2: Poll until done
-  //     let status = data.status;
-  //     let tr;
-  //     while (status !== "completed" && status !== "error") {
-  //       await new Promise(r => setTimeout(r, 5000)); // wait 5 sec
-  //       const pollRes = await fetch(`/transcribe/${data.id}`);
-  //       tr = await pollRes.json();
-  //       status = tr.status;
-  //     }
-  
-  //     if (status === "completed") {
-  //       setTranscript(tr.text);
-  //     } else {
-  //       alert("Transcription failed.");
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  //   setLoading(false);
-  // };
-
-  // Right above is my previous handleSubmit that worked very well. Right below is the modified POST handleSubmit because I need to display the title and length of the episode, not just the transcript.
-
   const [transcriptData, setTranscriptData] = useState(null);
 
   const handleSubmit = async () => {

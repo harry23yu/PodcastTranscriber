@@ -201,7 +201,7 @@ pre {
   opacity: 1;
 }
 
-/* button:disabled,
+button:disabled,
 input[type="checkbox"]:disabled {
   cursor: default;
 }
@@ -210,6 +210,4 @@ button:disabled {
   background-color: #ffffff;   
   border: 1px solid #ccc;      
   opacity: 1;                
-} */
-
-/* CODE ADDED FOR 16TH GITHUB COMMIT IS COMMENTED OUT */
+}

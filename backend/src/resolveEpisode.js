@@ -29,6 +29,7 @@ async function resolveEpisode(spotifyEpisodeUrl, spotifyToken) {
         const episodeTitle = episodeData.name;
         const releaseDate = episodeData.release_date;
         const publisher = episodeData.show.publisher;
+        const durationMs = episodeData.duration_ms;
 
         // 2. Search Apple Podcasts API for show
         const appleRes = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(showName)}&media=podcast`);
@@ -74,7 +75,8 @@ async function resolveEpisode(spotifyEpisodeUrl, spotifyToken) {
             // episodeTitle: data.name, // Spotify's episode title
             episodeTitle,
             releaseDate, // Get date of episode
-            publisher // Get creator of episode
+            publisher, // Get creator of episode
+            durationMs // Get duration of episode
             // reason: null
          };
 

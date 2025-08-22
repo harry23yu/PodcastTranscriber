@@ -13,6 +13,7 @@ function App() {
   const [showTimestamps, setShowTimestamps] = useState(false); // Added line for timestamps toggle
   const [transcriptData, setTranscriptData] = useState(null);
   const [controlsDisabled, setControlsDisabled] = useState(false); // Added line to "disable" settings/Transcript button after the user clicks "Transcribe"
+  const [episodeDuration, setEpisodeDuration] = useState(null); // Added line for getting duration of episode (useful for estimating how line the transcription will take)
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -35,6 +36,9 @@ function App() {
       const episodeTitle = data.episodeTitle; // from backend
       const episodeDate = data.episodeDate;
       const creator = data.creator;
+
+      const durationMinutes = Math.ceil((data.durationMs || 0) / 60000);
+      setEpisodeDuration(durationMinutes);
 
       // Date should be in [Month] [Day], [Year], not yyyy-mm-dd
       let formattedDate = "Unknown Date";
@@ -128,7 +132,11 @@ function App() {
               </span>
             </span>
           </div>
-          {loading && <LoadingSpinner />}
+          {/* {loading && <LoadingSpinner />} */}
+          {/* {loading && <LoadingSpinner durationMinutes={episodeDurationInMinutes} />} */}
+          {loading && episodeDuration && (
+            <LoadingSpinner durationMinutes={episodeDuration} />
+          )}
           {/* {transcript && <TranscriptDisplay text={transcript} />} */}
           {transcriptData && (
               <TranscriptDisplay

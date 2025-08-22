@@ -134,8 +134,10 @@ router.post("/transcribe", async (req, res) => {
 
     // If a Spotify link is given, resolve to MP3 + title
     if (spotifyUrl && !audioUrl) {
-      const { mp3Url, episodeTitle: resolvedTitle, releaseDate, publisher, reason } =
+      const { mp3Url, episodeTitle: resolvedTitle, releaseDate, publisher, reason, durationMs } =
         await resolveEpisode(spotifyUrl, global.userAccessToken);
+
+      episodeDurationMs = durationMs; // Added line (store duration of episode)
 
       if (!mp3Url) {
         return res.status(400).json({ error: reason || "Could not get MP3 URL" });
@@ -165,7 +167,8 @@ router.post("/transcribe", async (req, res) => {
       status: transcript.status,
       episodeTitle: episodeTitle || "Unknown Title",
       episodeDate: episodeDate || "Unknown Date", // Get date of episode
-      creator: creator || "Unknown Creator" // Get creator of episode
+      creator: creator || "Unknown Creator", // Get creator of episode
+      durationMs: episodeDurationMs || null   // Get duration of episode
     });
   } catch (err) {
     console.error(err);

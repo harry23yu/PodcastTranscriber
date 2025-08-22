@@ -12,46 +12,74 @@ function formatTime(ms: number) {
 export default function TranscriptDisplay({ title, date, creator, duration, text, utterances, showTimestamps }) {
 
     const handleDownloadPDF = () => {
+
+        const BODY_FONT = 12;
+        const FOOTER_FONT = 10;
+
         const doc = new jsPDF();
       
         // Episode metadata
         doc.setFontSize(16);
         doc.text("Episode Transcript", 10, 10);
       
-        doc.setFontSize(12);
+        // doc.setFontSize(12);
+        doc.setFontSize(BODY_FONT);
         doc.text(`Episode name: ${title}`, 10, 20);
         doc.text(`Date: ${date}`, 10, 30);
         doc.text(`Creator: ${creator}`, 10, 40);
         doc.text(`Duration: ${duration}`, 10, 50);
       
         let y = 70; // Shift transcript start down since metadata is taller
-        const lineHeight = 7;
+        // const lineHeight = 7;
+        let lineHeight = BODY_FONT * 0.58; // ~7px for 12pt
         const pageHeight = doc.internal.pageSize.height;
         const pageWidth = doc.internal.pageSize.width;
         let pageNumber = 1;
       
         const addPageNumber = () => {
-          doc.setFontSize(10);
-          doc.text(
-            `Page ${pageNumber}`,
-            pageWidth / 2,
-            pageHeight - 10,
-            { align: "center" }
-          );
+          // doc.setFontSize(10);
+          // doc.text(
+          //   `Page ${pageNumber}`,
+          //   pageWidth / 2,
+          //   pageHeight - 10,
+          //   { align: "center" }
+          // );
+          const prev = doc.getFontSize();
+          doc.setFontSize(FOOTER_FONT);
+          doc.text(`Page ${pageNumber}`, pageWidth / 2, pageHeight - 10, { align: "center" });
+          doc.setFontSize(prev); // restore body font
         };
       
-        const addParagraphs = (lines) => {
-          lines.forEach((line) => {
+        // const addParagraphs = (lines) => {
+        //   lines.forEach((line) => {
+        //     if (y + lineHeight > pageHeight - 20) {
+        //       addPageNumber();
+        //       doc.addPage();
+        //       pageNumber++;
+        //       y = 20;
+        //     }
+        //     doc.text(line, 10, y);
+        //     y += lineHeight;
+        //   });
+        // };
+
+        const addParagraphs = (wrappedLines) => {
+          wrappedLines.forEach((line) => {
+            // If we're near the bottom, finish the page and start a new one
             if (y + lineHeight > pageHeight - 20) {
               addPageNumber();
               doc.addPage();
               pageNumber++;
               y = 20;
+              doc.setFontSize(BODY_FONT);     // make sure body font is restored
+              lineHeight = BODY_FONT * 0.58;  // keep spacing consistent
             }
+        
             doc.text(line, 10, y);
             y += lineHeight;
           });
-        };
+          y += lineHeight; // Add an empty line between speakers/paragraphs
+        };        
       
         // Old if statement (timestamps always appear in transcript no matter what)
         // if (text && text.trim().length > 0) {

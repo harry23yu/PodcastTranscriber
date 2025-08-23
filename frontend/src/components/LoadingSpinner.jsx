@@ -14,7 +14,7 @@ export default function LoadingSpinner({ durationMinutes }) {
       <div className="spinner"></div>
       <p style={{ marginTop: "10px" }}>Transcription in progress...</p>
       <p>
-        Estimated time to finish transcription: {estimated} minute
+        Total estimated time to finish transcription: {estimated} minute
         {estimated > 1 ? "s" : ""}
       </p>
     </div>

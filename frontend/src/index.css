@@ -87,9 +87,9 @@ button:focus-visible {
   padding-bottom: 20px;
 }
 
-.tip {
+/* .tip {
   font-size: 14px;
-}
+} */
 
 .transcription-stuff {
   text-align: center;
@@ -180,7 +180,7 @@ pre {
 
 .tooltip .tooltiptext {
   visibility: hidden;
-  width: 220px;
+  width: 360px;
   background-color: #333;
   color: #fff;
   text-align: left;
@@ -226,4 +226,33 @@ button:disabled {
   to {
     transform: rotate(360deg);
   }
+}
+
+.website-header {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* space between logo and text */
+}
+
+.website-header img {
+  width: 60px;
+  border-radius: 50%;
+}
+
+.author-section {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 20px;
+}
+
+.author-section a {
+  color: blue;
+  text-decoration: underline;
+}
+
+.author-section a:hover {
+  text-decoration: none;
+}
+
+.steps {
+  margin-bottom: 10px;
 }

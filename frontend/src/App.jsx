@@ -92,7 +92,12 @@ function App() {
 
   return (
     <div id="root">
-      <h1>Spotify Transcriber</h1>
+      <div className="website-header">
+        <img src="SpotifyLogo.png" width="60px" alt="Spotify logo" />
+        <h1>Spotify Transcriber</h1>
+        <img src="Notes.png" width="60px" alt="Spotify logo" />
+      </div>
+      <div className="author-section">Made by <a href="https://www.linkedin.com/in/harry23yu/" target="_blank" rel="noopener noreferrer">Harry Yu</a></div>
       <div className="main-content">
         <Instructions />
         <div className="transcription-stuff">
@@ -128,7 +133,7 @@ function App() {
             <span className="tooltip">
               ⓘ
               <span className="tooltiptext">
-                When this is turned on, timestamps will appear before each speaker's paragraph.
+                When this is turned on, timestamps will appear before each speaker's paragraph. Please note that timestamps are approximate. They show when each speaker started talking, not the exact time it took to say the whole paragraph. A short line may look long if there was a pause after it, and a long paragraph may look short if the system grouped it tightly. Use timestamps as rough markers of where you are in the episode (for example, [01:25:30] in a 1 hour 30 minute episode means you're close to the end of the transcript), not precise durations.
               </span>
             </span>
           </div>

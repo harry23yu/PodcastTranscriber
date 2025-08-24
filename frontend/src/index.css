@@ -256,3 +256,8 @@ button:disabled {
 .steps {
   margin-bottom: 10px;
 }
+
+.api-input {
+  width: 100% !important;
+  max-width: 200px;
+}

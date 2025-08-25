@@ -16,7 +16,7 @@ function App() {
   const [controlsDisabled, setControlsDisabled] = useState(false); // Added line to "disable" settings/Transcript button after the user clicks "Transcribe"
   const [episodeDuration, setEpisodeDuration] = useState(null); // Added line for getting duration of episode (useful for estimating how line the transcription will take)
 
-  async function startTranscription(audioUrl) { // 🚨 Using user's API keys now
+  async function startTranscription(audioUrl, filterProfanity) { // 🚨 Using user's API keys now
     const assemblyKey = localStorage.getItem("assemblyai_api_key");
     if (!assemblyKey) throw new Error("Missing AssemblyAI API key");
   
@@ -24,7 +24,7 @@ function App() {
     const res = await fetch("/api/aai/transcripts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ audioUrl, assemblyKey }),
+      body: JSON.stringify({ audioUrl, assemblyKey, filterProfanity }),
     });
     const job = await res.json();
   
@@ -179,17 +179,25 @@ function App() {
       }
   
       // Step 2: Call AssemblyAI directly with user's key
-      const tr = await startTranscription(data.audioUrl);
+      const tr = await startTranscription(data.audioUrl, filterProfanity);
   
       // Step 3: Clean transcript with OpenAI
       const cleaned = await cleanTranscript(tr.text);
-  
+
+      // Helper to format seconds to hh:mm:ss
+      function formatDuration(seconds) {
+        const h = String(Math.floor(seconds / 3600)).padStart(2, "0");
+        const m = String(Math.floor((seconds % 3600) / 60)).padStart(2, "0");
+        const s = String(Math.floor(seconds % 60)).padStart(2, "0");
+        return `${h}:${m}:${s}`;
+      }     
+
       // Step 4: Save to state
       setTranscriptData({
         title: episodeTitle,
         date: formattedDate,
         creator: creator,
-        duration: tr.audio_duration,
+        duration: formatDuration(tr.audio_duration || 0),
         transcript: cleaned,
         utterances: tr.utterances,
       });

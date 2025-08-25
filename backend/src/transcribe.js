@@ -226,7 +226,7 @@ router.post("/transcribe", async (req, res) => {
 // POST /api/aai/transcripts
 router.post("/api/aai/transcripts", async (req, res) => {
   try {
-    const { audioUrl, assemblyKey } = req.body;
+    const { audioUrl, assemblyKey, filterProfanity } = req.body;
     if (!assemblyKey || !audioUrl) {
       return res.status(400).json({ error: "assemblyKey and audioUrl are required" });
     }
@@ -238,7 +238,7 @@ router.post("/api/aai/transcripts", async (req, res) => {
       audio_url: audioUrl,
       speaker_labels: true,
       disfluencies: false,
-      filter_profanity: true,
+      filter_profanity: !!filterProfanity, // Used for profanity filter toggle
       punctuate: true,
       format_text: true,
     });

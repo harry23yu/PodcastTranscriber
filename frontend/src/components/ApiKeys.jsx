@@ -58,7 +58,7 @@ export default function ApiKeys() {
 }
 
 // Issues to fix:
-// 1. Duration is in seconds, not hh:mm:ss
-// 2. Profanity toggle not working
+// 1. Duration is in seconds, not hh:mm:ss (SOLVED)
+// 2. Profanity toggle not working (SOLVED)
 // 3. Baked-in ads are in the transcript
 // 4. Even with random and wrong API keys, transcription still work

@@ -234,6 +234,9 @@ router.post("/api/aai/transcripts", async (req, res) => {
     const { AssemblyAI } = require("assemblyai");
     const aai = new AssemblyAI({ apiKey: assemblyKey });
 
+    console.log("🔑 Received AssemblyAI key:", assemblyKey?.slice(0, 10) + "..."); // Test line
+    console.log("🎵 Audio URL:", audioUrl); // Test line
+
     const transcript = await aai.transcripts.submit({
       audio_url: audioUrl,
       speaker_labels: true,
@@ -243,9 +246,18 @@ router.post("/api/aai/transcripts", async (req, res) => {
       format_text: true,
     });
 
+    console.log("📝 AssemblyAI transcript job created:", transcript.id, "status:", transcript.status); // Test line
+
     res.json(transcript);
   } catch (err) {
-    console.error(err);
+    // console.error(err);
+    // res.status(500).json({ error: "failed to create transcript" });
+    console.error("AssemblyAI error:", err.message);
+    
+    if (err.message.includes("401") || err.message.toLowerCase().includes("unauthorized")) {
+      return res.status(401).json({ error: "Invalid AssemblyAI key" });
+    }
+
     res.status(500).json({ error: "failed to create transcript" });
   }
 });

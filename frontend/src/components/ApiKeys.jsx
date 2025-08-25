@@ -3,22 +3,42 @@ import { useState, useEffect } from "react";
 export default function ApiKeys() {
   // Always clear keys on page load
   useEffect(() => {
-    sessionStorage.removeItem("assemblyai_api_key");
-    sessionStorage.removeItem("openai_api_key");
+    // sessionStorage.removeItem("assemblyai_api_key");
+    // sessionStorage.removeItem("openai_api_key");
+    localStorage.removeItem("assemblyai_api_key");
+    localStorage.removeItem("openai_api_key");
   }, []);
 
   const [assemblyKey, setAssemblyKey] = useState("");
   const [openaiKey, setOpenaiKey] = useState("");
 
   useEffect(() => {
+    // if (assemblyKey) {
+      // sessionStorage.setItem("assemblyai_api_key", assemblyKey);
+      // localStorage.setItem("assemblyai_api_key", assemblyKey);
     if (assemblyKey) {
       sessionStorage.setItem("assemblyai_api_key", assemblyKey);
+      localStorage.setItem("assemblyai_api_key", assemblyKey);
+    } 
+    else {
+      sessionStorage.removeItem("assemblyai_api_key");
+      localStorage.removeItem("assemblyai_api_key");
     }
+    // }
   }, [assemblyKey]);
 
   useEffect(() => {
+    // if (openaiKey) {
+    //   sessionStorage.setItem("openai_api_key", openaiKey);
+    //   localStorage.setItem("openai_api_key", openaiKey);
+    // }
     if (openaiKey) {
       sessionStorage.setItem("openai_api_key", openaiKey);
+      localStorage.setItem("openai_api_key", openaiKey);
+    }
+    else {
+      sessionStorage.removeItem("openai_api_key");
+      localStorage.removeItem("openai_api_key");
     }
   }, [openaiKey]);
 

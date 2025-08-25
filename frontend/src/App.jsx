@@ -18,6 +18,8 @@ function App() {
 
   async function startTranscription(audioUrl, filterProfanity) { // 🚨 Using user's API keys now
     const assemblyKey = localStorage.getItem("assemblyai_api_key");
+    console.log("📦 Sending transcription request with AssemblyAI key:", assemblyKey?.slice(0, 6) + "..."); // Test line
+
     if (!assemblyKey) throw new Error("Missing AssemblyAI API key");
   
     // 1. Create transcript job via backend
@@ -35,10 +37,28 @@ function App() {
       const poll = await fetch(`/api/aai/transcripts/${job.id}?assemblyKey=${assemblyKey}`);
       tr = await poll.json();
     }
+
+    console.log("📊 Final transcript status:", tr.status); // Test line
+    if (tr.error) console.error("❌ Transcript error:", tr.error); // Test line
   
+    // if (tr.status !== "completed") {
+    //   throw new Error("Transcription failed: " + tr.error);
+    // }
+
+    // Commented out the above if block and used the below if block to show error for invalid keys
     if (tr.status !== "completed") {
+      if (tr.error?.toLowerCase().includes("unauthorized")) {
+        alert("Invalid AssemblyAI API key. Please check and try again.");
+      } else {
+        alert("Transcription failed: " + tr.error);
+      }
       throw new Error("Transcription failed: " + tr.error);
     }
+    
+    if (data.error?.message?.toLowerCase().includes("invalid")) {
+      alert("Invalid OpenAI API key. Please check and try again.");
+      throw new Error("Invalid OpenAI key");
+    }    
   
     return tr;
   }  
@@ -148,6 +168,16 @@ function App() {
     setLoading(true);
     setControlsDisabled(true);
     try {
+      // 🔒 Check that both keys are present before starting
+      const assemblyKey = localStorage.getItem("assemblyai_api_key");
+      const openaiKey = localStorage.getItem("openai_api_key");
+      if (!assemblyKey || !openaiKey) {
+        alert("Please paste both of your API keys in the boxes.");
+        setLoading(false);
+        setControlsDisabled(false);
+        return;
+      }
+
       // Step 1: Resolve Spotify → MP3 via backend
       const res = await fetch("/transcribe", {
         method: "POST",
@@ -203,7 +233,8 @@ function App() {
       });
     } catch (err) {
       console.error(err);
-      alert("Error during transcription.");
+      // alert("Error during transcription.");
+      alert("At least one API key is incorrect. Please make sure that you have both correct keys.");
     }
     setLoading(false);
   };

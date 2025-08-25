@@ -20,6 +20,7 @@ build/
 # Test files
 /backend/test_episodes/test_episode*.json
 /backend/test_audio/test_audio*.mp3
+tests.txt
 
 # Keep folder for test episode files
 !/backend/test_episodes/

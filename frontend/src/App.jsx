@@ -55,17 +55,24 @@ function App() {
       throw new Error("Transcription failed: " + tr.error);
     }
     
-    if (data.error?.message?.toLowerCase().includes("invalid")) {
-      alert("Invalid OpenAI API key. Please check and try again.");
-      throw new Error("Invalid OpenAI key");
-    }    
+    // if (data.error?.message?.toLowerCase().includes("invalid")) {
+    //   alert("Invalid OpenAI API key. Please check and try again.");
+    //   throw new Error("Invalid OpenAI key");
+    // }    
   
     return tr;
   }  
   
   async function cleanTranscript(transcriptText) { // 🚨 Using user's API keys now
+    // const openaiKey = localStorage.getItem("openai_api_key");
+    // if (!openaiKey) throw new Error("Missing OpenAI API key");
+
+    // Some people are unwilling to pay money, and OpenAI API key requires a credit card to use the API. Thus, the transcription should work with just the AssemblyAI key, although no ads will be removed.
     const openaiKey = localStorage.getItem("openai_api_key");
-    if (!openaiKey) throw new Error("Missing OpenAI API key");
+    if (!openaiKey) {
+      console.warn("⚠️ No OpenAI key provided — skipping ad removal.");
+      return transcriptText; // just return raw transcript
+    }
   
     const res = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -88,6 +95,13 @@ function App() {
     });
   
     const data = await res.json();
+    // return data.choices?.[0]?.message?.content || transcriptText;
+
+    // Transcription should work with just the AssemblyAI key, although no ads will be removed.
+    if (data.error) {
+      console.error("OpenAI error:", data.error);
+      return transcriptText; // fallback to raw transcript
+    }
     return data.choices?.[0]?.message?.content || transcriptText;
   }  
 
@@ -171,8 +185,8 @@ function App() {
       // 🔒 Check that both keys are present before starting
       const assemblyKey = localStorage.getItem("assemblyai_api_key");
       const openaiKey = localStorage.getItem("openai_api_key");
-      if (!assemblyKey || !openaiKey) {
-        alert("Please paste both of your API keys in the boxes.");
+      if (!assemblyKey) {
+        alert("AssemblyAI key is required. OpenAI key is optional — use it if you want ads removed.");
         setLoading(false);
         setControlsDisabled(false);
         return;
@@ -188,6 +202,7 @@ function App() {
       if (!data.audioUrl) {
         alert(data.error || "No audio URL returned");
         setLoading(false);
+        setControlsDisabled(false); // Re-enable controls
         return;
       }
   
@@ -211,7 +226,7 @@ function App() {
       // Step 2: Call AssemblyAI directly with user's key
       const tr = await startTranscription(data.audioUrl, filterProfanity);
   
-      // Step 3: Clean transcript with OpenAI
+      // Step 3: Clean transcript with OpenAI (or skip if missing)
       const cleaned = await cleanTranscript(tr.text);
 
       // Helper to format seconds to hh:mm:ss
@@ -234,7 +249,21 @@ function App() {
     } catch (err) {
       console.error(err);
       // alert("Error during transcription.");
-      alert("At least one API key is incorrect. Please make sure that you have both correct keys.");
+      // alert("At least one API key is incorrect. Please make sure that you have both correct keys.");
+
+      // Transcription should work with just the AssemblyAI key, although no ads will be removed.
+
+      console.log("ERROR IS: ", err.message?.toLowerCase()); // Test line
+      if (err.message?.toLowerCase().includes("assemblyai")) {
+        alert("Invalid AssemblyAI key. Please check and try again.");
+      }
+      else if (err.message?.toLowerCase().includes("openai")) {
+        alert("OpenAI key invalid or missing. Transcript will still work, but ads won't be removed.");
+      }
+      else {
+        alert("An unexpected error occurred. Please try again.");
+      }
+      setControlsDisabled(false); // Re-enable controls
     }
     setLoading(false);
   };

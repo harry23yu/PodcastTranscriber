@@ -63,47 +63,153 @@ function App() {
     return tr;
   }  
   
-  async function cleanTranscript(transcriptText) { // 🚨 Using user's API keys now
-    // const openaiKey = localStorage.getItem("openai_api_key");
-    // if (!openaiKey) throw new Error("Missing OpenAI API key");
+  // Old cleanTranscript (doesn't remove ads, most likely because the entire transcript is sent at once to OpenAI, which is why ads are slipping through (too long / vague prompt))
+  // async function cleanTranscript(transcriptText) { // 🚨 Using user's API keys now
+  //   // const openaiKey = localStorage.getItem("openai_api_key");
+  //   // if (!openaiKey) throw new Error("Missing OpenAI API key");
 
-    // Some people are unwilling to pay money, and OpenAI API key requires a credit card to use the API. Thus, the transcription should work with just the AssemblyAI key, although no ads will be removed.
+  //   // Some people are unwilling to pay money, and OpenAI API key requires a credit card to use the API. Thus, the transcription should work with just the AssemblyAI key, although no ads will be removed.
+  //   const openaiKey = localStorage.getItem("openai_api_key");
+  //   if (!openaiKey) {
+  //     console.warn("⚠️ No OpenAI key provided — skipping ad removal.");
+  //     return transcriptText; // just return raw transcript
+  //   }
+  
+  //   const res = await fetch("https://api.openai.com/v1/chat/completions", {
+  //     method: "POST",
+  //     headers: {
+  //       Authorization: `Bearer ${openaiKey}`,
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       model: "gpt-4o-mini",
+  //       temperature: 0,
+  //       messages: [
+  //         {
+  //           role: "system",
+  //           content:
+  //             "You are a transcript cleaner. ONLY remove ads or sponsorships. Do not summarize or add commentary.",
+  //         },
+  //         { role: "user", content: transcriptText },
+  //       ],
+  //     }),
+  //   });
+  
+  //   const data = await res.json();
+  //   // return data.choices?.[0]?.message?.content || transcriptText;
+
+  //   // Transcription should work with just the AssemblyAI key, although no ads will be removed.
+  //   if (data.error) {
+  //     console.error("OpenAI error:", data.error);
+  //     return transcriptText; // fallback to raw transcript
+  //   }
+  //   return data.choices?.[0]?.message?.content || transcriptText;
+  // }  
+
+  // New cleanTranscript (chunking + safeguards + logging)
+  async function cleanTranscript(utterances) {
     const openaiKey = localStorage.getItem("openai_api_key");
     if (!openaiKey) {
       console.warn("⚠️ No OpenAI key provided — skipping ad removal.");
-      return transcriptText; // just return raw transcript
+      return { transcript: utterances.map(u => u.text).join(" "), utterances };
     }
-  
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${openaiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        temperature: 0,
-        messages: [
-          {
-            role: "system",
-            content:
-              "You are a transcript cleaner. ONLY remove ads or sponsorships. Do not summarize or add commentary.",
-          },
-          { role: "user", content: transcriptText },
-        ],
-      }),
-    });
-  
-    const data = await res.json();
-    // return data.choices?.[0]?.message?.content || transcriptText;
 
-    // Transcription should work with just the AssemblyAI key, although no ads will be removed.
-    if (data.error) {
-      console.error("OpenAI error:", data.error);
-      return transcriptText; // fallback to raw transcript
+    console.log("🧹 Starting ad-cleaning with OpenAI (utterance-based)...");
+
+    // Helper: chunk utterances (~1500 words max per chunk)
+    function chunkUtterances(utterances, maxWords = 1500) {
+      const chunks = [];
+      let current = [];
+      let count = 0;
+      for (const u of utterances) {
+        const words = u.text.split(" ").length;
+        if (count + words > maxWords) {
+          chunks.push(current);
+          current = [];
+          count = 0;
+        }
+        current.push(u);
+        count += words;
+      }
+      if (current.length) chunks.push(current);
+      console.log(`Total chunks created: ${chunks.length}`);
+      return chunks;
     }
-    return data.choices?.[0]?.message?.content || transcriptText;
-  }  
+
+    const chunks = chunkUtterances(utterances);
+    let cleanedText = "";
+
+    for (const [i, chunk] of chunks.entries()) {
+      const textBlock = chunk.map(u => `Speaker ${u.speaker}: ${u.text}`).join("\n");
+      const rawWordCount = textBlock.trim().split(/\s+/).length;
+      console.log(`Chunk ${i + 1}: raw length ${textBlock.length} chars, ${rawWordCount} words`);
+      console.log(`Chunk ${i + 1} preview: ${textBlock.slice(0, 200).replace(/\n/g, " ")}...`);
+
+      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${openaiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          temperature: 0,
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are a transcript cleaner. Remove ONLY ads, sponsor messages, or promotional segments. Keep everything else unchanged. Do not summarize. Do not add commentary. Output the cleaned transcript text directly.",
+            },
+            { role: "user", content: textBlock },
+          ],
+        }),
+      });
+
+      const data = await res.json();
+
+      let cleanedChunk = data.choices?.[0]?.message?.content || "";
+      let cleanedWordCount = cleanedChunk.trim().split(/\s+/).length;
+
+      // Safeguard: fall back if bad/empty output
+      if (
+        !cleanedChunk ||
+        cleanedChunk.trim().length < 20 ||
+        cleanedChunk.toLowerCase().includes("i'm sorry")
+      ) {
+        console.warn(`⚠️ Chunk ${i + 1}: bad LLM output — falling back to original chunk`);
+        cleanedChunk = textBlock;
+        cleanedWordCount = rawWordCount;
+      }
+
+      console.log(
+        `Chunk ${i + 1}: cleaned length ${cleanedChunk.length} chars, ${cleanedWordCount} words (removed ${rawWordCount - cleanedWordCount} words)`
+      );
+      console.log(`Cleaned preview: ${cleanedChunk.slice(0, 200).replace(/\n/g, " ")}...`);
+
+      cleanedText += cleanedChunk + "\n";
+    }
+
+    // Rebuild cleaned utterances (so TranscriptDisplay + PDF show cleaned version)
+    const cleanedUtterances = cleanedText
+      .split("\n")
+      .filter(line => line.trim().length > 0)
+      .map((line, idx) => ({
+        start: utterances[idx]?.start || 0,
+        speaker: utterances[idx]?.speaker || "Unknown",
+        text: line.replace(/^Speaker\s+[A-Z0-9]+:\s*/, "")
+      }));
+
+    // Whole transcript stats
+    const rawWordCount = utterances.map(u => u.text).join(" ").split(/\s+/).length;
+    const cleanedWordCount = cleanedText.trim().split(/\s+/).length;
+    console.log(`--- WHOLE EPISODE SUMMARY ---`);
+    console.log(`Raw transcript: ${rawWordCount} words`);
+    console.log(`Cleaned transcript: ${cleanedWordCount} words`);
+    console.log(`Removed: ${rawWordCount - cleanedWordCount} words`);
+    console.log(`--------------------------------`);
+
+    return { transcript: cleanedText.trim(), utterances: cleanedUtterances };
+  }
 
   // const handleSubmit = async () => { // 🚨 COMMENTED OUT BECAUSE NOT USING MY API KEYS ANYMORE
   //   setLoading(true);
@@ -227,7 +333,8 @@ function App() {
       const tr = await startTranscription(data.audioUrl, filterProfanity);
   
       // Step 3: Clean transcript with OpenAI (or skip if missing)
-      const cleaned = await cleanTranscript(tr.text);
+      // const cleaned = await cleanTranscript(tr.text); // Removing ads doesn't work
+      const cleaned = await cleanTranscript(tr.utterances);
 
       // Helper to format seconds to hh:mm:ss
       function formatDuration(seconds) {
@@ -243,8 +350,10 @@ function App() {
         date: formattedDate,
         creator: creator,
         duration: formatDuration(tr.audio_duration || 0),
-        transcript: cleaned,
-        utterances: tr.utterances,
+        // transcript: cleaned, // Removing ads doesn't work
+        transcript: cleaned.transcript,
+        // utterances: tr.utterances, // Removing ads doesn't work
+        utterances: cleaned.utterances,
       });
     } catch (err) {
       console.error(err);

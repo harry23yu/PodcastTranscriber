@@ -176,7 +176,7 @@ const { resolveEpisode } = require("./resolveEpisode");
 //   }
 // });
 
-// POST /transcribe (user the user's API keys; new version)
+// POST /transcribe (using the user's API keys; new version)
 router.post("/transcribe", async (req, res) => {
   try {
     let { audioUrl, spotifyUrl } = req.body;
@@ -529,7 +529,7 @@ router.get("/api/aai/transcripts/:id", async (req, res) => {
 //   }
 // });
 
-// POST /transcribe/summary/:id (using the user's API keys; new version)
+// POST /transcribe/summary/:id (using the user's API keys; old version)
 // router.post("/transcribe/summary/:id", async (req, res) => { // 🚨 COMMENTED OUT BECAUSE NOT USING MY API KEYS ANYMORE
 //   try {
 //     const { id } = req.params;

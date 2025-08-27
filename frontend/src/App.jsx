@@ -172,12 +172,25 @@ function App() {
       let cleanedChunk = data.choices?.[0]?.message?.content || "";
       let cleanedWordCount = cleanedChunk.trim().split(/\s+/).length;
 
-      // Safeguard: fall back if bad/empty output
-      if (
-        !cleanedChunk ||
-        cleanedChunk.trim().length < 20 ||
-        cleanedChunk.toLowerCase().includes("i'm sorry")
-      ) {
+      // Safeguard: fall back if bad/empty output (this is too weak because any "i'm sorry" text in the chunk will fallback)
+      // if (
+      //   !cleanedChunk ||
+      //   cleanedChunk.trim().length < 20 ||
+      //   cleanedChunk.toLowerCase().includes("i'm sorry")
+      // ) {
+      //   console.warn(`⚠️ Chunk ${i + 1}: bad LLM output — falling back to original chunk`);
+      //   cleanedChunk = textBlock;
+      //   cleanedWordCount = rawWordCount;
+      // }
+
+      // Safeguard: fall back if bad/empty/refusal output (much stronger)
+      const tooShort = cleanedChunk.trim().length < 20;
+      const looksEmpty = !cleanedChunk;
+      const refusalMessage =
+        cleanedChunk.toLowerCase().includes("i'm sorry") &&
+        cleanedChunk.toLowerCase().includes("assist with that");
+
+      if (looksEmpty || tooShort || refusalMessage) {
         console.warn(`⚠️ Chunk ${i + 1}: bad LLM output — falling back to original chunk`);
         cleanedChunk = textBlock;
         cleanedWordCount = rawWordCount;

@@ -80,6 +80,6 @@ export default function ApiKeys() {
 // Issues to fix:
 // 1. Duration is in seconds, not hh:mm:ss (SOLVED)
 // 2. Profanity toggle not working (SOLVED)
-// 3. Baked-in ads are in the transcript
+// 3. Baked-in ads are in the transcript (SOLVED)
 // 4. Even with random and wrong API keys, transcription still work (SOLVED)
-// 5. Some users don't want to pay money so transcription should work with just AssemblyAI API key, but no ads removed (PARTIALLY SOLVED; WORKS WITH JUST ASSEMBLYAI API KEY BUT ADS STILL IN THE TRANSCRIPT)
+// 5. Some users don't want to pay money so transcription should work with just AssemblyAI API key, but no ads removed (SOLVED)

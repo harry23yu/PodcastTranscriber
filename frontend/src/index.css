@@ -261,3 +261,51 @@ button:disabled {
   width: 100% !important;
   max-width: 200px;
 }
+
+.instructions a {
+  color: blue;
+  text-decoration: underline;
+}
+
+.instructions a:hover {
+  text-decoration: none;
+}
+
+.keys-instructions a {
+  color: blue;
+  text-decoration: underline;
+}
+
+.keys-instructions a:hover {
+  text-decoration: none;
+}
+
+.keys-instructions {
+  text-align: center;    /* or center, depending on your preference */
+  padding-bottom: 20px;
+  width: 50%;          /* match .main-content */
+  margin: 0 auto;      /* center horizontally */
+}
+
+.github-promotion {
+  text-align: center;
+  font-size: 14px;
+}
+
+.github-promotion a {
+  color: blue;
+  text-decoration: underline;
+}
+
+.github-promotion a:hover {
+  text-decoration: none;
+}
+
+.transcript-box a {
+  color: aqua;
+  text-decoration: underline;
+}
+
+.transcript-box a:hover {
+  text-decoration: none;
+}

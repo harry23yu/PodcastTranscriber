@@ -5,6 +5,8 @@ import SubmitButton from "./components/SubmitButton";
 import LoadingSpinner from "./components/LoadingSpinner";
 import TranscriptDisplay from "./components/TranscriptDisplay";
 import ApiKeys from "./components/ApiKeys";
+import { Routes, Route, Link } from "react-router-dom";
+import KeysInstructions from "./components/KeysInstructions";
 
 function App() {
   const [link, setLink] = useState("");
@@ -385,65 +387,77 @@ function App() {
         <img src="Notes.png" width="60px" alt="Spotify logo" />
       </div>
       <div className="author-section">Made by <a href="https://www.linkedin.com/in/harry23yu/" target="_blank" rel="noopener noreferrer">Harry Yu</a></div>
-      <div className="main-content">
-        <Instructions />
-        <div className="transcription-stuff">
-          <ApiKeys />
-          <LinkInput value={link} onChange={setLink} />
-          <SubmitButton onClick={handleSubmit} disabled={controlsDisabled}/>
-          {/* The code within the options className is for profanity filter and timestamps toggle */}
-          <div className="options">
-            <label>
-              <input
-                type="checkbox"
-                checked={filterProfanity}
-                onChange={(e) => setFilterProfanity(e.target.checked)}
-                disabled={controlsDisabled}
-              />
-              Disable profanity?
-            </label>
-            <span className="tooltip">
-              ⓘ
-              <span className="tooltiptext">
-                When this is turned on, bad words like the F-word will be written as F***.
-              </span>
-            </span>
-            <br></br>
-            <label>
-              <input
-                type="checkbox"
-                checked={showTimestamps}
-                onChange={(e) => setShowTimestamps(e.target.checked)}
-                disabled={controlsDisabled}
-              />
-              Show timestamps
-            </label>
-            <span className="tooltip">
-              ⓘ
-              <span className="tooltiptext">
-                When this is turned on, timestamps will appear before each speaker's paragraph. Please note that timestamps are approximate. They show when each speaker started talking, not the exact time it took to say the whole paragraph. A short line may look long if there was a pause after it, and a long paragraph may look short if the system grouped it tightly. Use timestamps as rough markers of where you are in the episode (for example, [01:25:30] in a 1 hour 30 minute episode means you're close to the end of the transcript), not precise durations.
-              </span>
-            </span>
-          </div>
-          {/* {loading && <LoadingSpinner />} */}
-          {/* {loading && <LoadingSpinner durationMinutes={episodeDurationInMinutes} />} */}
-          {loading && episodeDuration && (
-            <LoadingSpinner durationMinutes={episodeDuration} />
-          )}
-          {/* {transcript && <TranscriptDisplay text={transcript} />} */}
-          {transcriptData && (
-              <TranscriptDisplay
-                title={transcriptData.title}
-                date={transcriptData.date}        // pass date
-                creator={transcriptData.creator}  // pass creator
-                duration={transcriptData.duration}
-                text={transcriptData.transcript}
-                utterances={transcriptData.utterances} // Added line for speakers to display in transcription
-                showTimestamps={showTimestamps} // Added line for timestamps to display in transcription
-              />
-          )}
-        </div>
-      </div>
+      <Routes>
+        {/* Home page = your existing transcription tool */}
+        <Route
+          path="/"
+          element={
+            <div className="main-content">
+              <Instructions />
+              <div className="github-promotion">Liked this Spotify transcription tool? Feel free to leave a star on <a href="https://github.com/harry23yu/SpotifyTranscription" target="_blank" rel="noopener noreferrer">GitHub</a>!</div>
+              <div className="transcription-stuff">
+                <ApiKeys />
+                <LinkInput value={link} onChange={setLink} />
+                <SubmitButton onClick={handleSubmit} disabled={controlsDisabled}/>
+                {/* The code within the options className is for profanity filter and timestamps toggle */}
+                <div className="options">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={filterProfanity}
+                      onChange={(e) => setFilterProfanity(e.target.checked)}
+                      disabled={controlsDisabled}
+                    />
+                    Disable profanity?
+                  </label>
+                  <span className="tooltip">
+                    ⓘ
+                    <span className="tooltiptext">
+                      When this is turned on, bad words like the F-word will be written as F***.
+                    </span>
+                  </span>
+                  <br></br>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={showTimestamps}
+                      onChange={(e) => setShowTimestamps(e.target.checked)}
+                      disabled={controlsDisabled}
+                    />
+                    Show timestamps
+                  </label>
+                  <span className="tooltip">
+                    ⓘ
+                    <span className="tooltiptext">
+                      When this is turned on, timestamps will appear before each speaker's paragraph. Please note that timestamps are approximate. They show when each speaker started talking, not the exact time it took to say the whole paragraph. A short line may look long if there was a pause after it, and a long paragraph may look short if the system grouped it tightly. Use timestamps as rough markers of where you are in the episode (for example, [01:25:30] in a 1 hour 30 minute episode means you're close to the end of the transcript), not precise durations.
+                    </span>
+                  </span>
+                </div>
+                {/* {loading && <LoadingSpinner />} */}
+                {/* {loading && <LoadingSpinner durationMinutes={episodeDurationInMinutes} />} */}
+                {loading && episodeDuration && (
+                  <LoadingSpinner durationMinutes={episodeDuration} />
+                )}
+                {/* {transcript && <TranscriptDisplay text={transcript} />} */}
+                {transcriptData && (
+                    <TranscriptDisplay
+                      title={transcriptData.title}
+                      date={transcriptData.date}        // pass date
+                      creator={transcriptData.creator}  // pass creator
+                      duration={transcriptData.duration}
+                      text={transcriptData.transcript}
+                      utterances={transcriptData.utterances} // Added line for speakers to display in transcription
+                      showTimestamps={showTimestamps} // Added line for timestamps to display in transcription
+                    />
+                  )}
+                </div>
+              </div>
+            }
+          />
+
+        {/* Keys instructions page */}
+        <Route path="/KeysInstructions" element={<KeysInstructions />} />
+      </Routes>
     </div>
   );
 }

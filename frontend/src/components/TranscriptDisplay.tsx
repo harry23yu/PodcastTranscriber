@@ -141,6 +141,7 @@ export default function TranscriptDisplay({ title, date, creator, duration, text
                 <p><strong>Date:</strong> {date}</p>
                 <p><strong>Creator:</strong> {creator}</p>
                 <p><strong>Duration:</strong> {duration}</p>
+                <p>🎉 Transcript and PDF ready! Liked this tool? ⭐ Star it on <a href="https://github.com/harry23yu/SpotifyTranscription" target="_blank" rel="noopener noreferrer">GitHub</a>!</p>
                 <button onClick={handleDownloadPDF} className="download-btn">
                     Download PDF
                 </button>

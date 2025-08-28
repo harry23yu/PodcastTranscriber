@@ -48,7 +48,7 @@ export default function ApiKeys() {
 
       {/* AssemblyAI */}
       <div className="mb-3">
-        <label className="block mb-1">AssemblyAI Key: </label>
+        <label className="block mb-1">AssemblyAI key (required): </label>
         <input
           type="password"
           value={assemblyKey}
@@ -60,7 +60,7 @@ export default function ApiKeys() {
 
       {/* OpenAI */}
       <div className="mb-3">
-        <label className="block mb-1">OpenAI Key: </label>
+        <label className="block mb-1">OpenAI key (optional): </label>
         <input
           type="password"
           value={openaiKey}

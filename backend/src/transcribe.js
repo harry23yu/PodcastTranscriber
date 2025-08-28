@@ -207,7 +207,7 @@ router.post("/transcribe", async (req, res) => {
     }
 
     if (!audioUrl) {
-      return res.status(400).json({ error: "audioUrl or spotifyUrl required" });
+      return res.status(400).json({ error: "Spotify episode URL required" });
     }
 
     res.json({

@@ -10,11 +10,11 @@ export default function Instructions() {
               <span className="tooltip">
                 ⓘ
                 <span className="tooltiptext">
-                  This transcriber uses AssemblyAI to do the transcription and OpenAI to remove the baked-in ads from the transcript. If you don't have an OpenAI key (which costs money to use), that is fine, but the ads will show up in the transcript. If you decide to use an OpenAI key, I recommend adding a small amount (up to $5) because using the key is extremely cheap, even for episodes that are about an hour long. You must have an AssemblyAI key; otherwise, the episode won't be able to be transcribed.
+                  This transcriber uses AssemblyAI to do the transcription and OpenAI to remove the baked-in ads from the transcript. If you don't have an OpenAI key (which costs money to use), that is fine, but the ads will show up in the transcript. If you decide to use an OpenAI key, I recommend adding a small amount (up to $5) because using the key is extremely cheap, even for episodes that are about an hour long. You must have an AssemblyAI key; otherwise, the episode won't be able to be transcribed. AssemblyAI provides you $50 of free credits, so you should be able to transcribe many episodes before using it all up.
                 </span>
               </span>
               <div style={{ marginBottom: '8px' }} />
-              <b>Step 2: </b>Paste a Spotify episode (not track) link into the input box.
+              <b>Step 2: </b>Paste a Spotify episode (NOT track) link into the input box.
               <span className="tooltip">
                 ⓘ
                 <span className="tooltiptext">

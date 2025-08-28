@@ -385,7 +385,7 @@ function App() {
         alert("OpenAI key invalid or missing. Transcript will still work, but ads won't be removed.");
       }
       else {
-        alert("An unexpected error occurred. Please try again.");
+        alert("Make sure your AssemblyAI key is accurate and not expired. Also, make sure you are pasting a Spotify episode, not a track or anything else.");
       }
       setControlsDisabled(false); // Re-enable controls
     }
@@ -442,7 +442,7 @@ function App() {
                   <span className="tooltip">
                     ⓘ
                     <span className="tooltiptext">
-                      When this is turned on, timestamps will appear before each speaker's paragraph. Please note that timestamps are approximate. They show when each speaker started talking, not the exact time it took to say the whole paragraph. A short line may look long if there was a pause after it, and a long paragraph may look short if the system grouped it tightly. Use timestamps as rough markers of where you are in the episode (for example, [01:25:30] in a 1 hour 30 minute episode means you're close to the end of the transcript), not precise durations.
+                      When this is turned on, timestamps will appear before each speaker's paragraph. Please note that timestamps are approximate. They show when each speaker started talking, not the exact time it took to say the whole paragraph. A short line may look long if there was a pause after it, and a long paragraph may look short if the system grouped it tightly. Also, Spotify's dynamic ad insertion or OpenAI getting rid of ads can affect the timestamps, making them look a little bit inaccurate. Use timestamps as rough markers of where you are in the episode (for example, [01:25:30] in a 1 hour 30 minute episode means you're close to the end of the transcript), not precise durations.
                     </span>
                   </span>
                 </div>

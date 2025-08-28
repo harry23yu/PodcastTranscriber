@@ -15,7 +15,7 @@ async function resolveEpisode(spotifyEpisodeUrl, spotifyToken) {
         // Extract episode ID from URL
         const match = spotifyEpisodeUrl.match(/episode\/([a-zA-Z0-9]+)/);
         if (!match) {
-            return { mp3Url: null, reason: "Invalid Spotify URL" };
+            return { mp3Url: null, reason: "Invalid Spotify episode URL" };
         }
         const episodeId = match[1];
 
@@ -82,7 +82,7 @@ async function resolveEpisode(spotifyEpisodeUrl, spotifyToken) {
 
     } catch (err) {
         console.error("Error resolving episode:", err);
-        return { mp3Url: null, reason: "Error occurred" };
+        return { mp3Url: null, reason: "Make sure the Spotify episode exists, and it is an episode, not a track or anything else." };
     }
 }
 

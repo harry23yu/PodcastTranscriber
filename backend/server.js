@@ -1,6 +1,3 @@
-// import dotenv from "dotenv";
-// import transcribeRouter from "./src/transcribe.js";
-
 const express = require("express");
 const dotenv = require("dotenv");
 
@@ -20,17 +17,13 @@ const fs = require("fs");
 const path = require("path");
 require("dotenv").config();
 
-// const { extractEpisodeId, fetchEpisodeMetadata } = require("./spotify");
 const { extractEpisodeId } = require("./spotify");
 const { resolveEpisode } = require("./src/resolveEpisode.js");
 
-// const app = express();
 app.use(cors());
 app.use(express.json());
 
 let userAccessToken = null;
-
-// Added code from lines 34-63 so that the website can find MP3 link from Spotify episode link, then transcribe it
 const fetch = require("node-fetch");
 
 async function refreshSpotifyToken() {
@@ -64,7 +57,6 @@ setInterval(refreshSpotifyToken, 55 * 60 * 1000);
 
 // 1. Login route - send user to Spotify login
 app.get("/login", (req, res) => {
-  // const scopes = "user-read-email"; // can add podcast-specific scopes if needed
   const scopes = "user-read-email user-read-private user-read-playback-position user-read-playback-state";
   const redirectUri = process.env.REDIRECT_URI;
   const authUrl =
@@ -109,33 +101,6 @@ app.get("/callback", async (req, res) => {
   }
 });
 
-// app.post("/get-episode", async (req, res) => {
-//   try {
-//     const { spotifyUrl } = req.body;
-//     const episodeId = extractEpisodeId(spotifyUrl);
-
-//     if (!episodeId) {
-//       return res.status(400).json({ error: "Invalid Spotify URL" });
-//     }
-
-//     const metadata = await fetchEpisodeMetadata(episodeId);
-
-//     // Save locally for testing
-//     const fs = require("fs");
-//     fs.writeFileSync(
-//       `./backend/test_episode_${episodeId}.json`,
-//       JSON.stringify(metadata.raw, null, 2)
-//     );
-
-//     res.json(metadata);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "Failed to fetch episode metadata" });
-//     console.error("Error fetching episode metadata:", error.response?.data || error.message); // Test line
-//     console.log(extractEpisodeId("https://open.spotify.com/episode/7makk4oTQel546B0PZlDM5")); // Test line
-//   }
-// });
-
 // 3. Get episode metadata using the user's access token
 app.post("/get-episode", async (req, res) => {
   try {
@@ -159,9 +124,6 @@ app.post("/get-episode", async (req, res) => {
 
     // Save locally for testing
     const outputPath = path.join(__dirname, "test_episodes", `test_episode_${episodeId}.json`);
-      // `./backend/test_episode_${episodeId}.json`,
-      // `/test_episodes_${episodeId}.json`,
-      // JSON.stringify(data, null, 2);
     fs.writeFileSync(outputPath, JSON.stringify(data, null, 2));
 
     res.json({
@@ -173,7 +135,6 @@ app.post("/get-episode", async (req, res) => {
       raw: data
     });
   } catch (error) {
-    // console.error("Error fetching episode metadata:", error.response?.data || error.message);
     console.error("Error fetching episode metadata:", {
       message: error.message,
       status: error.response?.status,

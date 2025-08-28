@@ -72,12 +72,10 @@ async function resolveEpisode(spotifyEpisodeUrl, spotifyToken) {
         const mp3Url = matchEpisode.enclosure[0].$.url;
         return { 
             mp3Url,
-            // episodeTitle: data.name, // Spotify's episode title
-            episodeTitle,
+            episodeTitle, // Get title of episode
             releaseDate, // Get date of episode
             publisher, // Get creator of episode
             durationMs // Get duration of episode
-            // reason: null
          };
 
     } catch (err) {

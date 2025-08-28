@@ -27,7 +27,7 @@ body {
   margin: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;    /* center horizontally only */
+  align-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -74,7 +74,6 @@ button:focus-visible {
 
 /* Added CSS is below */
 
-/* Keep root centered but allow inner container for width control */
 #root {
   display: flex;
   flex-direction: column;
@@ -87,16 +86,12 @@ button:focus-visible {
   padding-bottom: 20px;
 }
 
-/* .tip {
-  font-size: 14px;
-} */
-
 .transcription-stuff {
   text-align: center;
 }
 
 .main-content {
-  width: 50%;        /* middle 50% horizontally */
+  width: 50%;
   margin: 0 auto;
   text-align: left;
 }
@@ -104,11 +99,10 @@ button:focus-visible {
 h1 {
   color: green;
   text-align: center;
-  margin-top: 2rem; /* adjust so it's closer to the top */
+  margin-top: 2rem;
   margin-bottom: 2rem;
 }
 
-/* Style the input */
 input[type="text"] {
   padding: 0.6em;
   font-size: 1em;
@@ -117,10 +111,9 @@ input[type="text"] {
   width: 300px;
 }
 
-/* Make transcript text easier to read */
 pre {
   background-color: #1e1e1e;
-  color: #ffffff; /* full white, not semi-transparent */
+  color: #ffffff;
   padding: 1rem;
   border-radius: 6px;
   overflow-x: auto;
@@ -135,8 +128,8 @@ pre {
 }
 
 .transcript-box {
-  background-color: #1e1e1e;  /* black box */
-  color: #ffffff;             /* white text */
+  background-color: #1e1e1e;
+  color: #ffffff;
   padding: 1rem;
   border-radius: 8px;
   max-width: 800px;
@@ -156,7 +149,7 @@ pre {
 }
 
 .transcript-box pre {
-  background: transparent;   /* remove double black background */
+  background: transparent;
   color: #ffffff;
   margin: 0;
   padding: 0;
@@ -188,7 +181,7 @@ pre {
   padding: 0.5rem;
   position: absolute;
   z-index: 1;
-  bottom: 125%; /* show above the icon */
+  bottom: 125%;
   left: 50%;
   margin-left: -110px;
   opacity: 0;
@@ -219,7 +212,7 @@ button:disabled {
   width: 30px;
   height: 30px;
   animation: spin 1s linear infinite;
-  margin: 0 auto; /* center horizontally */
+  margin: 0 auto;
 }
 
 @keyframes spin {
@@ -231,7 +224,7 @@ button:disabled {
 .website-header {
   display: flex;
   align-items: center;
-  gap: 20px; /* space between logo and text */
+  gap: 20px;
 }
 
 .website-header img {
@@ -281,10 +274,10 @@ button:disabled {
 }
 
 .keys-instructions {
-  text-align: center;    /* or center, depending on your preference */
+  text-align: center;
   padding-bottom: 20px;
-  width: 50%;          /* match .main-content */
-  margin: 0 auto;      /* center horizontally */
+  width: 50%;
+  margin: 0 auto;
 }
 
 .github-promotion {

@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 
 export default function ApiKeys() {
-  // Always clear keys on page load
+
+  // Clear saved API keys from localStorage when the page first loads
   useEffect(() => {
-    // sessionStorage.removeItem("assemblyai_api_key");
-    // sessionStorage.removeItem("openai_api_key");
     localStorage.removeItem("assemblyai_api_key");
     localStorage.removeItem("openai_api_key");
   }, []);
@@ -13,9 +12,6 @@ export default function ApiKeys() {
   const [openaiKey, setOpenaiKey] = useState("");
 
   useEffect(() => {
-    // if (assemblyKey) {
-      // sessionStorage.setItem("assemblyai_api_key", assemblyKey);
-      // localStorage.setItem("assemblyai_api_key", assemblyKey);
     if (assemblyKey) {
       sessionStorage.setItem("assemblyai_api_key", assemblyKey);
       localStorage.setItem("assemblyai_api_key", assemblyKey);
@@ -24,14 +20,9 @@ export default function ApiKeys() {
       sessionStorage.removeItem("assemblyai_api_key");
       localStorage.removeItem("assemblyai_api_key");
     }
-    // }
   }, [assemblyKey]);
 
   useEffect(() => {
-    // if (openaiKey) {
-    //   sessionStorage.setItem("openai_api_key", openaiKey);
-    //   localStorage.setItem("openai_api_key", openaiKey);
-    // }
     if (openaiKey) {
       sessionStorage.setItem("openai_api_key", openaiKey);
       localStorage.setItem("openai_api_key", openaiKey);
@@ -76,10 +67,3 @@ export default function ApiKeys() {
     </div>
   );
 }
-
-// Issues to fix:
-// 1. Duration is in seconds, not hh:mm:ss (SOLVED)
-// 2. Profanity toggle not working (SOLVED)
-// 3. Baked-in ads are in the transcript (SOLVED)
-// 4. Even with random and wrong API keys, transcription still work (SOLVED)
-// 5. Some users don't want to pay money so transcription should work with just AssemblyAI API key, but no ads removed (SOLVED)

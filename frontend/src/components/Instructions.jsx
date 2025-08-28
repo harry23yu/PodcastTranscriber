@@ -5,7 +5,7 @@ export default function Instructions() {
     return (
         <section className="instructions">
           <h3>How to use this tool:</h3>
-            <p>
+            <div>
               <b>Step 1: </b>Paste in your API key(s). <a href="https://www.assemblyai.com/dashboard/api-keys" target="_blank" rel="noopener noreferrer">AssemblyAI</a> is required and <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer">OpenAI</a> is optional. To learn how to get your keys, click <Link to="/KeysInstructions">here</Link>.
               <span className="tooltip">
                 ⓘ
@@ -21,7 +21,6 @@ export default function Instructions() {
                   The URL of a Spotify episode is like this: https://open.spotify.com/episode/episode_ID. Example: https://open.spotify.com/episode/2DBqc0rdKQEr7dKddSjfO8
                 </span>
               </span>
-              {/* <p className="tip">Tip: The URL of a Spotify episode is like this: https://open.spotify.com/episode/episode_ID. Example: https://open.spotify.com/episode/2DBqc0rdKQEr7dKddSjfO8</p> */}
               <div style={{ marginBottom: '8px' }} />
               <b>Step 3: </b>Choose whether to include profanity and timestamps in the transcript (can't change after "Transcribe" is clicked). 
               <div style={{ marginBottom: '8px' }} />
@@ -38,7 +37,8 @@ export default function Instructions() {
               <b>Step 6: </b>Download the transcript as a PDF if you want to.
               <div style={{ marginBottom: '8px' }} />
               <b>Step 7: </b>To transcribe a new episode, refresh the page (your current transcript will be cleared).
-            </p>
+            </div>
+          <br></br>
           <b><i>Note: Only episodes that are not exclusive to Spotify (i.e., those that can be found on Spotify and other websites like Apple Podcasts) can be transcribed. This is because Spotify's API and Terms and Service doesn't provide the full transcription or MP3 audio.</i></b>
         </section>
       );

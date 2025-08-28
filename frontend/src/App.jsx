@@ -18,7 +18,7 @@ function App() {
   const [controlsDisabled, setControlsDisabled] = useState(false); // Added line to "disable" settings/Transcript button after the user clicks "Transcribe"
   const [episodeDuration, setEpisodeDuration] = useState(null); // Added line for getting duration of episode (useful for estimating how line the transcription will take)
 
-  async function startTranscription(audioUrl, filterProfanity) { // 🚨 Using user's API keys now
+  async function startTranscription(audioUrl, filterProfanity) { // Using user's API keys now
     const assemblyKey = localStorage.getItem("assemblyai_api_key");
     console.log("📦 Sending transcription request with AssemblyAI key:", assemblyKey?.slice(0, 6) + "..."); // Test line
 
@@ -42,12 +42,7 @@ function App() {
 
     console.log("📊 Final transcript status:", tr.status); // Test line
     if (tr.error) console.error("❌ Transcript error:", tr.error); // Test line
-  
-    // if (tr.status !== "completed") {
-    //   throw new Error("Transcription failed: " + tr.error);
-    // }
 
-    // Commented out the above if block and used the below if block to show error for invalid keys
     if (tr.status !== "completed") {
       if (tr.error?.toLowerCase().includes("unauthorized")) {
         alert("Invalid AssemblyAI API key. Please check and try again.");
@@ -56,57 +51,9 @@ function App() {
       }
       throw new Error("Transcription failed: " + tr.error);
     }
-    
-    // if (data.error?.message?.toLowerCase().includes("invalid")) {
-    //   alert("Invalid OpenAI API key. Please check and try again.");
-    //   throw new Error("Invalid OpenAI key");
-    // }    
   
     return tr;
-  }  
-  
-  // Old cleanTranscript (doesn't remove ads, most likely because the entire transcript is sent at once to OpenAI, which is why ads are slipping through (too long / vague prompt))
-  // async function cleanTranscript(transcriptText) { // 🚨 Using user's API keys now
-  //   // const openaiKey = localStorage.getItem("openai_api_key");
-  //   // if (!openaiKey) throw new Error("Missing OpenAI API key");
-
-  //   // Some people are unwilling to pay money, and OpenAI API key requires a credit card to use the API. Thus, the transcription should work with just the AssemblyAI key, although no ads will be removed.
-  //   const openaiKey = localStorage.getItem("openai_api_key");
-  //   if (!openaiKey) {
-  //     console.warn("⚠️ No OpenAI key provided — skipping ad removal.");
-  //     return transcriptText; // just return raw transcript
-  //   }
-  
-  //   const res = await fetch("https://api.openai.com/v1/chat/completions", {
-  //     method: "POST",
-  //     headers: {
-  //       Authorization: `Bearer ${openaiKey}`,
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       model: "gpt-4o-mini",
-  //       temperature: 0,
-  //       messages: [
-  //         {
-  //           role: "system",
-  //           content:
-  //             "You are a transcript cleaner. ONLY remove ads or sponsorships. Do not summarize or add commentary.",
-  //         },
-  //         { role: "user", content: transcriptText },
-  //       ],
-  //     }),
-  //   });
-  
-  //   const data = await res.json();
-  //   // return data.choices?.[0]?.message?.content || transcriptText;
-
-  //   // Transcription should work with just the AssemblyAI key, although no ads will be removed.
-  //   if (data.error) {
-  //     console.error("OpenAI error:", data.error);
-  //     return transcriptText; // fallback to raw transcript
-  //   }
-  //   return data.choices?.[0]?.message?.content || transcriptText;
-  // }  
+  }
 
   // New cleanTranscript (chunking + safeguards + logging)
   async function cleanTranscript(utterances) {
@@ -172,18 +119,7 @@ function App() {
       let cleanedChunk = data.choices?.[0]?.message?.content || "";
       let cleanedWordCount = cleanedChunk.trim().split(/\s+/).length;
 
-      // Safeguard: fall back if bad/empty output (this is too weak because any "i'm sorry" text in the chunk will fallback)
-      // if (
-      //   !cleanedChunk ||
-      //   cleanedChunk.trim().length < 20 ||
-      //   cleanedChunk.toLowerCase().includes("i'm sorry")
-      // ) {
-      //   console.warn(`⚠️ Chunk ${i + 1}: bad LLM output — falling back to original chunk`);
-      //   cleanedChunk = textBlock;
-      //   cleanedWordCount = rawWordCount;
-      // }
-
-      // Safeguard: fall back if bad/empty/refusal output (much stronger)
+      // Safeguard: fall back if bad/empty/refusal output
       const tooShort = cleanedChunk.trim().length < 20;
       const looksEmpty = !cleanedChunk;
       const refusalMessage =
@@ -226,80 +162,7 @@ function App() {
     return { transcript: cleanedText.trim(), utterances: cleanedUtterances };
   }
 
-  // const handleSubmit = async () => { // 🚨 COMMENTED OUT BECAUSE NOT USING MY API KEYS ANYMORE
-  //   setLoading(true);
-  //   setControlsDisabled(true);   // Disable checkboxes and transcribe button
-  //   try {
-  //     // Step 1: Start transcription & get title
-  //     const res = await fetch("/transcribe", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ spotifyUrl: link, filterProfanity }), // Added filterProfanity for profanity filter toggle
-  //     });
-  //     const data = await res.json();
-
-  //     if (!data.id) {
-  //       alert(data.error || "No transcription ID returned");
-  //       setLoading(false);
-  //       return;
-  //     }
-
-  //     const episodeTitle = data.episodeTitle; // from backend
-  //     const episodeDate = data.episodeDate;
-  //     const creator = data.creator;
-
-  //     const durationMinutes = Math.ceil((data.durationMs || 0) / 60000);
-  //     setEpisodeDuration(durationMinutes);
-
-  //     // Date should be in [Month] [Day], [Year], not yyyy-mm-dd
-  //     let formattedDate = "Unknown Date";
-  //     if (episodeDate && episodeDate !== "Unknown Date") {
-  //       const [year, month, day] = episodeDate.split("-");
-  //       const dateObj = new Date(Number(year), Number(month) - 1, Number(day)); 
-  //       formattedDate = dateObj.toLocaleDateString("en-US", {
-  //         year: "numeric",
-  //         month: "long",
-  //         day: "numeric"
-  //       });
-  //     }
-
-  //     // console.log("Episode title from backend:", episodeTitle); // Test line (works!)
-  //     console.log("Episode date from backend:", episodeDate); // Test line
-  //     console.log("Episode creator from backend:", creator); // Test line
-
-  //     // Step 2: Poll until done
-  //     let status = data.status;
-  //     while (status !== "completed" && status !== "error") {
-  //       await new Promise(r => setTimeout(r, 5000)); // wait 5 sec
-  //       const pollRes = await fetch(`/transcribe/${data.id}`);
-  //       const tr = await pollRes.json();
-  //       status = tr.status;
-  //     }
-
-  //     if (status === "completed") {
-  //       // Step 3: Fetch summary for transcript + duration
-  //       const summaryRes = await fetch(`/transcribe/summary/${data.id}`);
-  //       const summaryData = await summaryRes.json();
-
-  //       // Step 4: Store all metadata
-  //       setTranscriptData({
-  //         title: episodeTitle,
-  //         date: formattedDate, // Get date of episode
-  //         creator: creator, // Get creator of episode
-  //         duration: summaryData.duration,
-  //         transcript: summaryData.transcript,
-  //         utterances: summaryData.utterances // Added line for speakers to display in transcription
-  //       });
-  //     } else {
-  //       alert("Transcription failed.");
-  //     }
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  //   setLoading(false);
-  // };
-
-  const handleSubmit = async () => { // 🚨 Using user's API keys now
+  const handleSubmit = async () => { // Using user's API keys now
     setLoading(true);
     setControlsDisabled(true);
     try {
@@ -348,7 +211,6 @@ function App() {
       const tr = await startTranscription(data.audioUrl, filterProfanity);
   
       // Step 3: Clean transcript with OpenAI (or skip if missing)
-      // const cleaned = await cleanTranscript(tr.text); // Removing ads doesn't work
       const cleaned = await cleanTranscript(tr.utterances);
 
       // Helper to format seconds to hh:mm:ss
@@ -365,19 +227,14 @@ function App() {
         date: formattedDate,
         creator: creator,
         duration: formatDuration(tr.audio_duration || 0),
-        // transcript: cleaned, // Removing ads doesn't work
         transcript: cleaned.transcript,
-        // utterances: tr.utterances, // Removing ads doesn't work
         utterances: cleaned.utterances,
       });
     } catch (err) {
       console.error(err);
-      // alert("Error during transcription.");
-      // alert("At least one API key is incorrect. Please make sure that you have both correct keys.");
-
-      // Transcription should work with just the AssemblyAI key, although no ads will be removed.
 
       console.log("ERROR IS: ", err.message?.toLowerCase()); // Test line
+      
       if (err.message?.toLowerCase().includes("assemblyai")) {
         alert("Invalid AssemblyAI key. Please check and try again.");
       }
@@ -395,24 +252,22 @@ function App() {
   return (
     <div id="root">
       <div className="website-header">
-        <img src="SpotifyLogo.png" width="60px" alt="Spotify logo" />
-        <h1>Spotify Transcriber</h1>
-        <img src="Notes.png" width="60px" alt="Spotify logo" />
+        <img src="Episode.png" width="60px" alt="Episode logo" />
+        <h1>Podcast Transcriber</h1>
+        <img src="Notes.png" width="60px" alt="Notes logo" />
       </div>
       <div className="author-section">Made by <a href="https://www.linkedin.com/in/harry23yu/" target="_blank" rel="noopener noreferrer">Harry Yu</a></div>
       <Routes>
-        {/* Home page = your existing transcription tool */}
         <Route
           path="/"
           element={
             <div className="main-content">
               <Instructions />
-              <div className="github-promotion">Liked this Spotify transcription tool? Feel free to leave a star on <a href="https://github.com/harry23yu/SpotifyTranscription" target="_blank" rel="noopener noreferrer">GitHub</a>!</div>
+              <div className="github-promotion">Liked this Spotify transcription tool? Feel free to leave a star on <a href="https://github.com/harry23yu/PodcastTranscriber" target="_blank" rel="noopener noreferrer">GitHub</a>!</div>
               <div className="transcription-stuff">
                 <ApiKeys />
                 <LinkInput value={link} onChange={setLink} />
                 <SubmitButton onClick={handleSubmit} disabled={controlsDisabled}/>
-                {/* The code within the options className is for profanity filter and timestamps toggle */}
                 <div className="options">
                   <label>
                     <input
@@ -446,29 +301,24 @@ function App() {
                     </span>
                   </span>
                 </div>
-                {/* {loading && <LoadingSpinner />} */}
-                {/* {loading && <LoadingSpinner durationMinutes={episodeDurationInMinutes} />} */}
                 {loading && episodeDuration && (
                   <LoadingSpinner durationMinutes={episodeDuration} />
                 )}
-                {/* {transcript && <TranscriptDisplay text={transcript} />} */}
                 {transcriptData && (
                     <TranscriptDisplay
                       title={transcriptData.title}
-                      date={transcriptData.date}        // pass date
-                      creator={transcriptData.creator}  // pass creator
+                      date={transcriptData.date}
+                      creator={transcriptData.creator}
                       duration={transcriptData.duration}
                       text={transcriptData.transcript}
-                      utterances={transcriptData.utterances} // Added line for speakers to display in transcription
-                      showTimestamps={showTimestamps} // Added line for timestamps to display in transcription
+                      utterances={transcriptData.utterances}
+                      showTimestamps={showTimestamps}
                     />
                   )}
                 </div>
               </div>
             }
           />
-
-        {/* Keys instructions page */}
         <Route path="/KeysInstructions" element={<KeysInstructions />} />
       </Routes>
     </div>

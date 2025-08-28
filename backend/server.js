@@ -1,30 +1,39 @@
 const express = require("express");
-const dotenv = require("dotenv");
-
-dotenv.config();
-const app = express();
-app.use(express.json());
-const transcribeRouter = require("./src/transcribe.js");
-
-app.use(transcribeRouter);
-app.use(express.urlencoded({ extended: true }));
-app.listen(3000, () => console.log("API on :3000"));
-
 const cors = require("cors");
+const dotenv = require("dotenv");
 const axios = require("axios");
 const queryString = require("querystring");
 const fs = require("fs");
 const path = require("path");
-require("dotenv").config();
+const fetch = require("node-fetch");
 
+dotenv.config();
+
+const app = express();
+
+// CORS MUST come before routes
+app.use(cors({
+  origin: "https://podcast-transcriber-seven.vercel.app", // your live Vercel frontend
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Routers and helper imports
+const transcribeRouter = require("./src/transcribe.js");
 const { extractEpisodeId } = require("./spotify");
 const { resolveEpisode } = require("./src/resolveEpisode.js");
 
-app.use(cors());
-app.use(express.json());
+// Register routes
+app.use(transcribeRouter);
 
-let userAccessToken = null;
-const fetch = require("node-fetch");
+// Keep the rest of your routes and logic below this point...
+
+// IMPORTANT: Start server at the bottom
+app.listen(5000, () => console.log("✅ Server running on port 5000"));
 
 async function refreshSpotifyToken() {
   const res = await fetch("https://accounts.spotify.com/api/token", {

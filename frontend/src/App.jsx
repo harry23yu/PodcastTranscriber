@@ -25,7 +25,7 @@ function App() {
     if (!assemblyKey) throw new Error("Missing AssemblyAI API key");
   
     // 1. Create transcript job via backend
-    const res = await fetch("/api/aai/transcripts", {
+    const res = await fetch("https://podcasttranscriber.onrender.com/api/aai/transcripts", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ audioUrl, assemblyKey, filterProfanity }),
@@ -36,7 +36,7 @@ function App() {
     let tr = job;
     while (tr.status === "queued" || tr.status === "processing") {
       await new Promise((r) => setTimeout(r, 3000));
-      const poll = await fetch(`/api/aai/transcripts/${job.id}?assemblyKey=${assemblyKey}`);
+      const poll = await fetch(`https://podcasttranscriber.onrender.com/api/aai/transcripts/${job.id}?assemblyKey=${assemblyKey}`);
       tr = await poll.json();
     }
 
@@ -177,7 +177,7 @@ function App() {
       }
 
       // Step 1: Resolve Spotify → MP3 via backend
-      const res = await fetch("/transcribe", {
+      const res = await fetch("https://podcasttranscriber.onrender.com/transcribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ spotifyUrl: link }),

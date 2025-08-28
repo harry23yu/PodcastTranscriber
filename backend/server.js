@@ -12,8 +12,12 @@ dotenv.config();
 const app = express();
 
 // CORS MUST come before routes
-app.use(cors({
-  origin: "https://podcast-transcriber-seven.vercel.app", // your live Vercel frontend
+app.use(cors({ // This helps the transcription work on podcasttranscriber.com
+  origin: [
+    "https://podcast-transcriber-seven.vercel.app",
+    "https://podcasttranscriber.com",
+    "https://www.podcasttranscriber.com"
+  ],
   methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));

@@ -256,7 +256,7 @@ function App() {
         <h1>Podcast Transcriber</h1>
         <img src="Notes.png" width="60px" alt="Notes logo" />
       </div>
-      <div className="author-section">Made by <a href="https://www.linkedin.com/in/harry23yu/" target="_blank" rel="noopener noreferrer">Harry Yu</a></div>
+      <div className="author-section">Made by <a href="https://harry-yu.dev/" target="_blank" rel="noopener noreferrer">Harry Yu</a></div>
       <Routes>
         <Route
           path="/"

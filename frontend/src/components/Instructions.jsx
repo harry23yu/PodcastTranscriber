@@ -24,9 +24,7 @@ export default function Instructions() {
               <div style={{ marginBottom: '8px' }} />
               <b>Step 3: </b>Choose whether to include profanity and timestamps in the transcript (can't change after "Transcribe" is clicked). 
               <div style={{ marginBottom: '8px' }} />
-              <b>Step 4: </b>Click "Transcribe."
-              <div style={{ marginBottom: '8px' }} />
-              <b>Step 5: </b>Wait for the transcript to appear.
+              <b>Step 4: </b>Click "Transcribe" and wait for the transcript to appear.
               <span className="tooltip">
                 ⓘ
                 <span className="tooltiptext">
@@ -34,9 +32,9 @@ export default function Instructions() {
                 </span>
               </span>
               <div style={{ marginBottom: '8px' }} />
-              <b>Step 6: </b>Download the transcript as a PDF if you want to.
+              <b>Step 5: </b>Download the transcript as a PDF if you want to.
               <div style={{ marginBottom: '8px' }} />
-              <b>Step 7: </b>To transcribe a new episode, refresh the page (your current transcript will be cleared).
+              <b>Step 6: </b>To transcribe a new episode, refresh the page (your current transcript will be cleared).
             </div>
           <br></br>
           <b><i>Note: Only episodes that are not exclusive to Spotify (i.e., those that can be found on Spotify and other websites like Apple Podcasts) can be transcribed. This is because Spotify's API and Terms and Service doesn't provide the full transcription or MP3 audio.</i></b>

@@ -26,5 +26,5 @@ Feel free to star the repo or submit issues if you'd like to improve the tool!
 ## 🧩 Testing
 To run the app locally for testing or development, follow these steps:
 - Install [Node](https://nodejs.org/en/download) for your code editor
-- In one terminal, go to the frontend folder and type "npm start" to run the frontend
+- In one terminal, go to the frontend folder and type "npm run dev" to run the frontend
 - In another terminal, go to the backend folder and type "node server.js" to run the backend

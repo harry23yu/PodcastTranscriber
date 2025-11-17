@@ -252,11 +252,12 @@ function App() {
   return (
     <div id="root">
       <div className="website-header">
-        <img src="Episode.png" width="60px" alt="Episode logo" />
+        {/* <img src="Favicon.png" width="30px" alt="Episode logo" /> */}
         <h1>Podcast Transcriber</h1>
-        <img src="Notes.png" width="60px" alt="Notes logo" />
+        {/* <img src="Notes.png" width="60px" alt="Notes logo" /> */}
       </div>
       <div className="author-section">Made by <a href="https://harry-yu.dev/" target="_blank" rel="noopener noreferrer">Harry Yu</a></div>
+      <br></br>
       <Routes>
         <Route
           path="/"
@@ -265,9 +266,14 @@ function App() {
               <Instructions />
               <div className="github-promotion">Liked this Spotify transcription tool? Feel free to leave a star on <a href="https://github.com/harry23yu/PodcastTranscriber" target="_blank" rel="noopener noreferrer">GitHub</a>!</div>
               <div className="transcription-stuff">
-                <ApiKeys />
-                <LinkInput value={link} onChange={setLink} />
-                <SubmitButton onClick={handleSubmit} disabled={controlsDisabled}/>
+                <div className="api-keys-section">
+                  <ApiKeys />
+                </div>
+                <br></br>
+                <div className="insert-link-and-submit">
+                  <LinkInput value={link} onChange={setLink} />
+                  <SubmitButton onClick={handleSubmit} disabled={controlsDisabled}/>
+                </div>
                 <div className="options">
                   <label>
                     <input

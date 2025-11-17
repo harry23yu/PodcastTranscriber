@@ -10,11 +10,11 @@ export default function KeysInstructions() {
           <div style={{ marginBottom: '8px' }} />
           <b>Step 2: </b> Once you are logged in, go to the <a href="https://www.assemblyai.com/dashboard/api-keys" target="_blank" rel="noopener noreferrer">API Keys tab</a> in the left-hand sidebar.
           <div style={{ marginBottom: '8px' }} />
-          <img src="Step2.png" width="200px" alt="AssemblyAI dashboard with the sidebar, and one of the tabs is called 'API Keys.'" />
+          <img src="Step2.png" className="first-photo" alt="AssemblyAI dashboard with the sidebar, and one of the tabs is called 'API Keys.'" />
           <div style={{ marginBottom: '8px' }} />
           <b>Step 3: </b> Click "Create new API key" if you don't have a key yet. Give it a name (any name is okay).
           <div style={{ marginBottom: '8px' }} />
-          <img src="Step3.png" width="700px" alt="The 'Create new API key' button is near the bottom-left side of the page." />
+          <img src="Step3.png" alt="The 'Create new API key' button is near the bottom-left side of the page." />
           <div style={{ marginBottom: '8px' }} />
           <b>Step 4: </b> Copy and paste the key into the AssemblyAI API key input box.
           <div style={{ marginBottom: '8px' }} />
@@ -24,11 +24,11 @@ export default function KeysInstructions() {
           <div style={{ marginBottom: '8px' }} />
           <b>Step 6: </b> Once you are logged in, create an OpenAI API key by going <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer">here</a> and clicking the "Create new secret key" button.
           <div style={{ marginBottom: '8px' }} />
-          <img src="Step6.png" width="700px" alt="The 'Create new secret key' button is very close to the top-right side of the page." />
+          <img src="Step6.png" alt="The 'Create new secret key' button is very close to the top-right side of the page." />
           <div style={{ marginBottom: '8px' }} />
           <b>Step 7: </b> Make sure it's owned by you (not a service account), give it an optional name, assign it to a project, and choose "All" for permissions.
           <div style={{ marginBottom: '8px' }} />
-          <img src="Step7.png" width="300px" alt="This little menu will only pop-up once you click the 'Create new secret key' button from step 6." />
+          <img src="Step7.png" alt="This little menu will only pop-up once you click the 'Create new secret key' button from step 6." />
           <div style={{ marginBottom: '8px' }} />
           <b>Step 8: </b> Click "Create secret key," and copy and paste the key into the OpenAI API key input box. 
         </p>

@@ -137,6 +137,7 @@ button:focus-visible {
   max-width: 650px;
   margin: 0 auto;
   text-align: center;
+  padding: 0 20px;
 }
 
 input[type="text"] {
@@ -309,10 +310,33 @@ button:disabled {
   text-decoration: none;
 }
 
-.keys-instructions {
+.keys-instructions img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 600px;
+  margin: 16px 0;
+  border-radius: 6px;
+}
+
+.keys-instructions img.first-photo {
+  max-width: 200px;
+  width: 100%;
+  height: auto;
+  margin: 16px 0;
+}
+
+/* .keys-instructions {
   text-align: center;
   padding-bottom: 20px;
   width: 50%;
+  margin: 0 auto;
+} */
+
+.keys-instructions {
+  padding: 0 20px;
+  text-align: left;
+  max-width: 650px;
   margin: 0 auto;
 }
 
